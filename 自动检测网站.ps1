@@ -42,7 +42,8 @@ while ($attempt -lt $MaxAttempts -and -not $success) {
             Write-Host ""
             Write-Host "访问时间: $timestamp" -ForegroundColor Green
             Write-Host "响应状态: $($response.StatusCode) OK" -ForegroundColor Green
-            Write-Host "响应时间: $($response.Headers.'Date' ?? $timestamp)" -ForegroundColor Green
+            $responseTime = if ($response.Headers.'Date') { $response.Headers.'Date' } else { $timestamp }
+            Write-Host "响应时间: $responseTime" -ForegroundColor Green
             Write-Host "网站地址: $WebsiteUrl" -ForegroundColor Green
             Write-Host "尝试次数: $attempt 次" -ForegroundColor Green
             Write-Host "耗时: 约$($attempt * $CheckInterval / 60) 分钟" -ForegroundColor Green

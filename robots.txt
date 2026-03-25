@@ -1,0 +1,54 @@
+# Robots.txt - 元膳健康
+# 指导搜索引擎爬虫如何抓取网站内容
+
+User-agent: *
+Allow: /
+
+# 禁止搜索引擎索引功能页面
+Disallow: /register.html
+Disallow: /forgot-password.html
+Disallow: /user-center.html
+Disallow: /admin-dashboard.html
+Disallow: /admin.html
+
+# Sitemap位置
+Sitemap: https://yuanshan.com/sitemap.xml
+
+# 百度爬虫
+User-agent: Baiduspider
+Allow: /
+Disallow: /register.html
+Disallow: /forgot-password.html
+Disallow: /user-center.html
+Disallow: /admin-dashboard.html
+Disallow: /admin.html
+
+# Google爬虫
+User-agent: Googlebot
+Allow: /
+Disallow: /register.html
+Disallow: /forgot-password.html
+Disallow: /user-center.html
+Disallow: /admin-dashboard.html
+Disallow: /admin.html
+
+# 360爬虫
+User-agent: 360Spider
+Allow: /
+Disallow: /register.html
+Disallow: /forgot-password.html
+Disallow: /user-center.html
+Disallow: /admin-dashboard.html
+Disallow: /admin.html
+
+# 搜狗爬虫
+User-agent: Sogou web spider
+Allow: /
+Disallow: /register.html
+Disallow: /forgot-password.html
+Disallow: /user-center.html
+Disallow: /admin-dashboard.html
+Disallow: /admin.html
+
+# 抓取延迟(可选,避免过频抓取)
+Crawl-delay: 1

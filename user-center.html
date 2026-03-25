@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>个人中心 - 元膳健康</title>
+    <meta name="description" content="元膳健康个人中心,查看历史健康评估报告,管理个人资料和健康数据。">
+    <meta name="robots" content="noindex,nofollow">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -548,6 +551,19 @@
             </div>
             <div class="history-list" id="historyList">
                 <!-- 历史记录将通过JS动态加载 -->
+                
+                <!-- 空状态提示 -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <i class="fas fa-clipboard-list"></i>
+                    <p>还没有评估记录</p>
+                    <p style="font-size: 0.9rem; color: #6b7280; margin-top: 1rem;">
+                        点击"健康评估"按钮，开始您的第一次健康评估
+                    </p>
+                    <button class="action-btn primary" onclick="window.location.href='AI健康膳食报告系统_pro.html'" 
+                            style="margin-top: 1.5rem; display: inline-block;">
+                        <i class="fas fa-play"></i> 开始评估
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -575,8 +591,23 @@
             // 这里模拟显示所有报告
             const userReports = reports.filter(r => r.id); // 实际应该根据用户ID过滤
             
-            // 更新统计数据
-            document.getElementById('reportCount').textContent = userReports.length;
+            // 显示或隐藏空状态
+            const historyList = document.getElementById('historyList');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (userReports.length === 0) {
+                historyList.style.display = 'none';
+                emptyState.style.display = 'flex';
+                document.getElementById('reportCount').textContent = '0';
+                document.getElementById('avgScore').textContent = '--';
+                document.getElementById('mealCount').textContent = '0';
+                document.getElementById('dayCount').textContent = '0';
+            } else {
+                historyList.style.display = 'block';
+                emptyState.style.display = 'none';
+                
+                // 更新统计数据
+                document.getElementById('reportCount').textContent = userReports.length;
             
             if (userReports.length > 0) {
                 const avgScore = userReports.reduce((sum, r) => sum + (r.score || 85), 0) / userReports.length;

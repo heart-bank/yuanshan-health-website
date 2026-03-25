@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>元膳健康 - AI驱动的智能健康膳食平台 | 科学膳食 健康生活</title>
+    <meta name="description" content="重庆元膳健康科技有限责任公司 - 通过AI技术创新,实现让每一餐吃得科学,活得健康。提供个性化健康评估、智能膳食建议、营养分析报告等一站式健康管理服务。">
+    <meta name="keywords" content="元膳健康,健康膳食,营养分析,健康管理,AI营养师,科学饮食,健康评估,膳食建议,营养师在线,智能营养">
+    <meta name="author" content="重庆元膳健康科技有限责任公司">
+    <meta name="robots" content="index,follow">
+    
+    <!-- Open Graph 社交分享优化 -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="元膳健康 - AI驱动的智能健康膳食平台">
+    <meta property="og:description" content="通过AI技术创新,实现让每一餐吃得科学,活得健康。1分钟完成健康评估,获取个性化膳食建议。">
+    <meta property="og:url" content="https://yuanshan.com">
+    <meta property="og:site_name" content="元膳健康">
+    <meta property="og:locale" content="zh_CN">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="元膳健康 - AI驱动的智能健康膳食平台">
+    <meta name="twitter:description" content="通过AI技术创新,实现让每一餐吃得科学,活得健康">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://yuanshan.com">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <!-- 资源预加载 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <style>
+        * {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* 华为/Apple 风格设计系统 */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --text-tertiary: #999999;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f7f8fa;
+            --bg-dark: #000000;
+            --border-color: #e8e8e8;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.16);
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-link {
+            position: relative;
+            padding: 8px 16px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary-color);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--primary-gradient);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* Hero区域 */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/></svg>');
+            background-size: 60px 60px;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-60px) rotate(360deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        .hero-btn {
+            background: #ffffff;
+            color: var(--primary-color);
+            padding: 18px 48px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+        }
+
+        .hero-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-btn.secondary {
+            background: transparent;
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .hero-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #ffffff;
+        }
+
+        /* 产品卡片 */
+        .product-card {
+            background: var(--bg-primary);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .product-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-color);
+        }
+
+        .product-tag {
+            display: inline-block;
+            padding: 6px 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .product-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .product-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 1rem 0;
+        }
+
+        /* 功能模块 */
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--primary-gradient);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon i {
+            font-size: 1.75rem;
+            color: white;
+        }
+
+        /* 统计数据 */
+        .stat-card {
+            background: var(--bg-primary);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .product-card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* 平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 加载动画 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        /* 登录模态框 */
+        .login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            width: 90%;
+            max-width: 480px;
+            box-shadow: var(--shadow-xl);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-gradient);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .login-logo i {
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .login-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .login-tabs {
+            display: flex;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .login-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+        }
+
+        .login-tab.active {
+            background: white;
+            color: var(--primary-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .form-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: var(--bg-secondary);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .login-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .login-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-leaf text-white text-lg"></i>
+                    </div>
+                    <span class="text-xl font-bold" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">元膳健康</span>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-1">
+                    <a href="#home" class="nav-link active">首页</a>
+                    <a href="#ai" class="nav-link">AI助手</a>
+                    <a href="#assessment" class="nav-link">健康评估</a>
+                    <a href="#products" class="nav-link">产品展示</a>
+                    <a href="#about" class="nav-link">关于我们</a>
+                    <a href="#contact" class="nav-link">联系我们</a>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <button class="nav-link" id="loginBtn">
+                        <i class="fas fa-user-circle text-xl"></i>
+                    </button>
+                    <button class="nav-link md:hidden" id="menuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero区域 -->
+    <section id="home" class="hero">
+        <div class="hero-content max-w-7xl mx-auto px-6 py-32">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h1 class="hero-title fade-in">
+                        AI驱动的<br>
+                        智能健康膳食<br>
+                        全新体验
+                    </h1>
+                    <p class="hero-subtitle fade-in delay-1">
+                        深化全民健康饮食认知，以数据智能定制健康膳食，重塑膳食产业生态
+                    </p>
+                    <div class="flex flex-wrap gap-4 fade-in delay-2">
+                        <button class="hero-btn" onclick="scrollToSection('assessment')">
+                            开始健康评估
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                        <button class="hero-btn secondary" onclick="scrollToSection('products')">
+                            <i class="fas fa-play mr-2"></i>
+                            了解更多
+                        </button>
+                    </div>
+                </div>
+
+                <div class="hidden md:block fade-in delay-3">
+                    <div class="relative">
+                        <div class="w-full h-96 bg-white/10 backdrop-blur-sm rounded-3xl border border-white/20 p-8">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="stat-card bg-white/20 backdrop-blur-sm">
+                                    <div class="stat-number">99.9%</div>
+                                    <div class="stat-label text-white/80">AI准确率</div>
+                                </div>
+                                <div class="stat-card bg-white/20 backdrop-blur-sm">
+                                    <div class="stat-number">500+</div>
+                                    <div class="stat-label text-white/80">健康食谱</div>
+                                </div>
+                                <div class="stat-card bg-white/20 backdrop-blur-sm">
+                                    <div class="stat-number">30+</div>
+                                    <div class="stat-label text-white/80">营养专家</div>
+                                </div>
+                                <div class="stat-card bg-white/20 backdrop-blur-sm">
+                                    <div class="stat-number">100万+</div>
+                                    <div class="stat-label text-white/80">用户信赖</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 核心功能模块 -->
+    <section id="features" class="py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4" style="color: var(--text-primary);">
+                    AI+膳食核心能力
+                </h2>
+                <p class="text-xl" style="color: var(--text-secondary);">
+                    以AI算法为驱动，智能融合多维用户数据，在保留饮食风味的同时实现健康升级
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="product-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3" style="color: var(--text-primary);">
+                        AI智能体健康体系
+                    </h3>
+                    <p style="color: var(--text-secondary);">
+                        非菜单选择，AI深度定制您的个性化膳食方案，基于中医体质和现代营养学，为您量身打造
+                    </p>
+                </div>
+
+                <div class="product-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3" style="color: var(--text-primary);">
+                        健康数据智能分析
+                    </h3>
+                    <p style="color: var(--text-secondary);">
+                        实时追踪您健康指标，生成专业健康报告，让您对自己的身体状况了如指掌
+                    </p>
+                </div>
+
+                <div class="product-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3" style="color: var(--text-primary);">
+                        地方特色菜改良
+                    </h3>
+                    <p style="color: var(--text-secondary);">
+                        保留传统风味，科学调整营养配比，让川菜、粤菜等地方特色更健康
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI助手 -->
+    <section id="ai" class="py-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-4xl font-bold mb-6" style="color: var(--text-primary);">
+                        AI健康助手
+                    </h2>
+                    <p class="text-xl mb-6" style="color: var(--text-secondary);">
+                        24小时在线，为您解答各种膳食营养问题
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="product-card">
+                            <h4 class="font-semibold mb-2">📝 示例问题：</h4>
+                            <ul class="space-y-2" style="color: var(--text-secondary);">
+                                <li>• "我有糖尿病，可以吃什么？"</li>
+                                <li>• "想减肥，一周应该怎么安排饮食？"</li>
+                                <li>• "高血压患者饮食有什么禁忌？"</li>
+                                <li>• "川菜改良版麻婆豆腐怎么制作？"</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-xl p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 flex items-center justify-center mr-4">
+                            <i class="fas fa-robot text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold" style="color: var(--text-primary);">AI健康助手</h4>
+                            <p class="text-sm" style="color: var(--text-secondary);">在线为您服务</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-xl p-4 mb-4 max-h-80 overflow-y-auto">
+                        <div class="mb-4">
+                            <div class="bg-white rounded-lg p-3 shadow-sm mb-2 inline-block">
+                                <p style="color: var(--text-primary);">你好！我是AI健康助手，有什么可以帮助您的吗？</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-2">
+                        <input type="text" placeholder="输入您的问题..." class="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition-colors">
+                        <button class="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">
+                            发送
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 健康评估入口 -->
+    <section id="assessment" class="py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold mb-4" style="color: var(--text-primary);">
+                开始您的健康评估
+            </h2>
+            <p class="text-xl mb-8" style="color: var(--text-secondary);">
+                通过AI智能评估，获取您的专属健康膳食方案
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <div class="product-card text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user-plus text-2xl" style="color: var(--primary-color);"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">第一步</h3>
+                    <p style="color: var(--text-secondary);">填写基本信息</p>
+                </div>
+
+                <div class="product-card text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-clipboard-check text-2xl" style="color: var(--primary-color);"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">第二步</h3>
+                    <p style="color: var(--text-secondary);">完成健康问卷</p>
+                </div>
+
+                <div class="product-card text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-file-medical text-2xl" style="color: var(--primary-color);"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">第三步</h3>
+                    <p style="color: var(--text-secondary);">获取健康报告</p>
+                </div>
+            </div>
+
+            <button class="hero-btn text-xl" onclick="openAssessment()">
+                <i class="fas fa-bolt mr-2"></i>
+                ⚡ 快速评估（1分钟）
+            </button>
+
+            <p class="text-center mt-4" style="color: var(--text-secondary);">
+                <a href="javascript:void(0)" onclick="openFullAssessment()" style="color: var(--primary); text-decoration: none;">
+                    查看完整版评估 <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </p>
+        </div>
+    </section>
+
+    <!-- 产品展示 -->
+    <section id="products" class="py-24">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4" style="color: var(--text-primary);">
+                    本期内测产品
+                </h2>
+                <p class="text-xl" style="color: var(--text-secondary);">
+                    川菜健康改良版系列，保留91%风味，更健康的选择
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="product-card">
+                    <span class="product-tag">本期内测</span>
+                    <h3 class="product-title">健康改良版麻婆豆腐套餐</h3>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm">低油版</span>
+                        <span class="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">精准控盐</span>
+                        <span class="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-sm">高蛋白</span>
+                        <span class="px-3 py-1 bg-orange-100 text-orange-600 rounded-full text-sm">0添加味精</span>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                        经典川菜麻婆豆腐的健康改良版本，科学配比营养，保留传统麻辣鲜香
+                    </p>
+                    <div class="product-price">¥28.00</div>
+                    <button class="w-full hero-btn text-base">
+                        立即订购
+                    </button>
+                </div>
+
+                <div class="product-card">
+                    <span class="product-tag" style="background: #e0e0e0; color: #666;">即将上线</span>
+                    <h3 class="product-title">低GI红烧肉套餐</h3>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-3 py-1 bg-red-100 text-red-600 rounded-full text-sm">低GI</span>
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-600 rounded-full text-sm">控制血糖</span>
+                        <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm">0反式脂肪</span>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                        精选优质食材，科学烹饪工艺，降低升糖指数，适合血糖管理人群
+                    </p>
+                    <div class="product-price" style="color: var(--text-tertiary);">¥35.00</div>
+                    <button class="w-full bg-gray-200 text-gray-600 py-3 rounded-xl font-semibold cursor-not-allowed">
+                        即将上线
+                    </button>
+                </div>
+
+                <div class="product-card">
+                    <span class="product-tag" style="background: #e0e0e0; color: #666;">即将上线</span>
+                    <h3 class="product-title">高蛋白宫保鸡丁套餐</h3>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">高蛋白</span>
+                        <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm">健身友好</span>
+                        <span class="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-sm">科学配比</span>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                        增肌减脂的理想选择，优质蛋白配比，满足健身人群营养需求
+                    </p>
+                    <div class="product-price" style="color: var(--text-tertiary);">¥32.00</div>
+                    <button class="w-full bg-gray-200 text-gray-600 py-3 rounded-xl font-semibold cursor-not-allowed">
+                        即将上线
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于我们 -->
+    <section id="about" class="py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-4xl font-bold mb-6" style="color: var(--text-primary);">
+                        关于元膳健康
+                    </h2>
+                    <p class="text-lg mb-6" style="color: var(--text-secondary);">
+                        重庆元膳健康科技有限责任公司，致力于通过AI技术创新，实现"让每一餐吃得科学，活得健康"的使命。
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-4 mt-1">
+                                <i class="fas fa-check text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">核心使命</h4>
+                                <p style="color: var(--text-secondary);">深化全民健康饮食认知，以数据智能定制健康膳食，重塑膳食产业生态</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-4 mt-1">
+                                <i class="fas fa-check text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">技术专利</h4>
+                                <p style="color: var(--text-secondary);">拥有多项核心技术专利，构建强大的技术护城河</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-4 mt-1">
+                                <i class="fas fa-check text-purple-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">政策支持</h4>
+                                <p style="color: var(--text-secondary);">响应国务院"人工智能+"行动，获政府大力支持</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="stat-card">
+                        <div class="stat-number">10+</div>
+                        <div class="stat-label">年技术积累</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">30+</div>
+                        <div class="stat-label">营养专家</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">100万+</div>
+                        <div class="stat-label">服务用户</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">健康食谱</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系我们 -->
+    <section id="contact" class="py-24">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold mb-6" style="color: var(--text-primary);">
+                联系我们
+            </h2>
+            <p class="text-xl mb-8" style="color: var(--text-secondary);">
+                对AI+膳食项目感兴趣？欢迎联系我们，共同推动健康膳食产业发展
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="product-card">
+                    <i class="fas fa-phone text-3xl mb-4" style="color: var(--primary-color);"></i>
+                    <h4 class="font-semibold mb-2">客服电话</h4>
+                    <p style="color: var(--text-secondary);">400-XXX-XXXX</p>
+                </div>
+
+                <div class="product-card">
+                    <i class="fas fa-envelope text-3xl mb-4" style="color: var(--primary-color);"></i>
+                    <h4 class="font-semibold mb-2">邮箱地址</h4>
+                    <p style="color: var(--text-secondary);">contact@yuanshan.com</p>
+                </div>
+
+                <div class="product-card">
+                    <i class="fas fa-map-marker-alt text-3xl mb-4" style="color: var(--primary-color);"></i>
+                    <h4 class="font-semibold mb-2">公司地址</h4>
+                    <p style="color: var(--text-secondary);">重庆市高新区XX路XX号</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 底部 -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-leaf text-white text-lg"></i>
+                        </div>
+                        <span class="text-xl font-bold">元膳健康</span>
+                    </div>
+                    <p class="text-gray-400">
+                        AI驱动的智能健康膳食平台，让每一餐吃得科学，活得健康
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">产品服务</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#ai" class="hover:text-white transition-colors">AI健康助手</a></li>
+                        <li><a href="#assessment" class="hover:text-white transition-colors">健康评估</a></li>
+                        <li><a href="#products" class="hover:text-white transition-colors">产品展示</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">我的订单</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">关于我们</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#about" class="hover:text-white transition-colors">公司介绍</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">团队介绍</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">合作机会</a></li>
+                        <li><a href="#contact" class="hover:text-white transition-colors">联系我们</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">法律条款</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="关于我们.html" class="hover:text-white transition-colors">关于我们</a></li>
+                        <li><a href="用户协议.html" class="hover:text-white transition-colors">用户协议</a></li>
+                        <li><a href="隐私政策.html" class="hover:text-white transition-colors">隐私政策</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">免责声明</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold mb-4">关注我们</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-purple-600 transition-colors">
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-purple-600 transition-colors">
+                            <i class="fab fa-weibo"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-purple-600 transition-colors">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+                <p>&copy; 2026 重庆元膳健康科技有限责任公司 版权所有</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 登录模态框 -->
+    <div class="login-modal" id="loginModal">
+        <button class="close-btn" id="closeLogin">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="login-box">
+            <div class="login-header">
+                <div class="login-logo">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h2 class="login-title">欢迎回来</h2>
+                <p class="login-subtitle">登录元膳健康，开启智能膳食之旅</p>
+            </div>
+
+            <div class="login-tabs">
+                <div class="login-tab active" data-tab="login">登录</div>
+                <div class="login-tab" data-tab="register">注册</div>
+            </div>
+
+            <!-- 登录表单 -->
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">用户名</label>
+                    <input type="text" class="form-input" id="loginUsername" placeholder="请输入用户名" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">密码</label>
+                    <input type="password" class="form-input" id="loginPassword" placeholder="请输入密码" required>
+                </div>
+                <button type="submit" class="form-btn">登录</button>
+            </form>
+
+            <!-- 注册表单 -->
+            <form id="registerForm" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label">手机号</label>
+                    <input type="tel" class="form-input" placeholder="请输入手机号" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">验证码</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" class="form-input" placeholder="请输入验证码" required>
+                        <button type="button" class="form-btn" style="width: auto; padding: 14px 24px; background: var(--bg-secondary); color: var(--text-secondary);">获取验证码</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">密码</label>
+                    <input type="password" class="form-input" placeholder="请设置密码" required>
+                </div>
+                <button type="submit" class="form-btn">注册</button>
+            </form>
+
+            <div class="login-footer">
+                登录即表示同意 <a href="用户协议.html" target="_blank">用户协议</a> 和 <a href="隐私政策.html" target="_blank">隐私政策</a>
+                <div style="margin-top: 10px;">
+                    <a href="register.html" target="_blank" style="color: #667eea; text-decoration: none; font-weight: 500;">没有账号? 立即注册</a>
+                    <span style="margin: 0 10px; color: #d1d5db;">|</span>
+                    <a href="forgot-password.html" target="_blank" style="color: #6b7280; text-decoration: none;">忘记密码?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // 平滑滚动到指定区域
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // 打开健康评估
+        function openAssessment() {
+            window.open('快速健康评估.html', '_blank');
+        }
+
+        // 打开完整版健康评估（高级选项）
+        function openFullAssessment() {
+            window.open('AI健康膳食报告系统_pro.html', '_blank');
+        }
+
+        // 导航链接点击事件
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const sectionId = href.substring(1);
+                    scrollToSection(sectionId);
+                }
+            });
+        });
+
+        // AI助手简单模拟
+        const aiResponses = {
+            '糖尿病': '糖尿病患者建议选择低GI食物，如全谷物、燕麦、糙米等。建议控制碳水化合物摄入量，每天200-250克主食为宜。同时多吃蔬菜，适量摄入优质蛋白质。',
+            '减肥': '减肥期间建议控制总热量摄入，每天减少300-500千卡。推荐高蛋白低脂肪食物，多吃蔬菜水果。建议采用地中海饮食或低碳水饮食方案。',
+            '高血压': '高血压患者应限制钠盐摄入，每天不超过5克。多吃富含钾的食物如香蕉、菠菜。避免高脂肪、高胆固醇食物。建议采用DASH饮食模式。',
+            '麻婆豆腐': '健康改良版麻婆豆腐：1）精选优质豆腐，低油烹饪；2）精准控盐，用低钠酱油替代部分食盐；3）增加蔬菜比例；4）科学配比辣椒和花椒，保留风味同时减少刺激。'
+        };
+
+        document.querySelector('input[placeholder="输入您的问题..."]').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const question = this.value;
+                const chatContainer = document.querySelector('.bg-gray-50');
+                
+                // 添加用户消息
+                const userMessage = document.createElement('div');
+                userMessage.className = 'mb-4';
+                userMessage.innerHTML = `
+                    <div class="bg-purple-100 rounded-lg p-3 shadow-sm ml-auto inline-block max-w-xs">
+                        <p style="color: var(--text-primary);">${question}</p>
+                    </div>
+                `;
+                chatContainer.appendChild(userMessage);
+
+                // 查找匹配的回复
+                let response = '抱歉，我暂时无法回答这个问题。建议您尝试咨询"糖尿病"、"减肥"、"高血压"或"麻婆豆腐"相关问题。';
+                for (const key in aiResponses) {
+                    if (question.includes(key)) {
+                        response = aiResponses[key];
+                        break;
+                    }
+                }
+
+                // 添加AI回复
+                setTimeout(() => {
+                    const aiMessage = document.createElement('div');
+                    aiMessage.className = 'mb-4';
+                    aiMessage.innerHTML = `
+                        <div class="bg-white rounded-lg p-3 shadow-sm inline-block max-w-xs">
+                            <p style="color: var(--text-primary);">${response}</p>
+                        </div>
+                    `;
+                    chatContainer.appendChild(aiMessage);
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                }, 500);
+
+                this.value = '';
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        });
+
+        // 移动端菜单
+        document.getElementById('menuBtn').addEventListener('click', function() {
+            alert('移动端菜单功能即将上线');
+        });
+
+        // 登录按钮点击
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            document.getElementById('loginModal').style.display = 'flex';
+        });
+
+        // 关闭登录框
+        document.getElementById('closeLogin').addEventListener('click', function() {
+            document.getElementById('loginModal').style.display = 'none';
+        });
+
+        // 点击模态框背景关闭
+        document.getElementById('loginModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+
+        // 切换登录/注册
+        document.querySelectorAll('.login-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabType = this.dataset.tab;
+                document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                if (tabType === 'login') {
+                    document.getElementById('loginForm').style.display = 'block';
+                    document.getElementById('registerForm').style.display = 'none';
+                } else {
+                    document.getElementById('loginForm').style.display = 'none';
+                    document.getElementById('registerForm').style.display = 'block';
+                }
+            });
+        });
+
+        // 登录表单提交
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            // 管理员登录验证
+            if (username === 'admin' && password === 'admin123') {
+                alert('管理员登录成功！');
+                document.getElementById('loginModal').style.display = 'none';
+                // 跳转到管理后台
+                window.open('admin-dashboard.html', '_blank');
+                return;
+            }
+
+            // 检查注册用户登录
+            const users = JSON.parse(localStorage.getItem('yuanshan_registered_users') || '[]');
+            const user = users.find(u => u.phone === username && u.password === password);
+
+            if (user) {
+                alert('登录成功！欢迎回来');
+                document.getElementById('loginModal').style.display = 'none';
+                // 保存当前登录用户信息
+                localStorage.setItem('yuanshan_current_user', JSON.stringify(user));
+                // 跳转到个人中心
+                window.open('user-center.html', '_blank');
+                return;
+            }
+
+            // 测试账号
+            if (username === 'user' && password === 'user123') {
+                alert('用户登录成功！');
+                document.getElementById('loginModal').style.display = 'none';
+                // 模拟用户信息
+                localStorage.setItem('yuanshan_current_user', JSON.stringify({
+                    phone: '138****8888',
+                    createdAt: new Date().toISOString()
+                }));
+                window.open('user-center.html', '_blank');
+                return;
+            }
+
+            alert('用户名或密码错误！\n\n测试账号：\n管理员账号：admin / admin123\n用户账号：user / user123\n\n注册用户请使用手机号和密码登录');
+        });
+
+        // 注册表单提交
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // 跳转到注册页面
+            window.open('register.html', '_blank');
+        });
+    </script>
+</body>
+</html>

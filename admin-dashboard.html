@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>元膳健康 - 管理员后台</title>
+    <meta name="description" content="元膳健康管理员后台系统">
+    <!-- 资源预加载 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <!-- Chart.js和SheetJS将延迟加载 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <style>
+        * {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success: #34C759;
+            --warning: #FF9500;
+            --danger: #FF3B30;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f7f8fa;
+            --border-color: #e8e8e8;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        body {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 260px;
+            background: var(--bg-primary);
+            border-right: 1px solid var(--border-color);
+            padding: 24px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .logo {
+            padding: 0 24px 32px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon i {
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            padding: 0 16px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-secondary);
+            color: var(--primary-color);
+        }
+
+        .nav-item.active {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .nav-item i {
+            width: 24px;
+            margin-right: 12px;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 32px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--bg-primary);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--bg-primary);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--primary-gradient);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon i {
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* 表格 */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+            color: var(--text-primary);
+            position: sticky;
+            top: 0;
+        }
+
+        .data-table tr:hover {
+            background: var(--bg-secondary);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* 标签 */
+        .tag {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .tag-success {
+            background: rgba(52, 199, 89, 0.12);
+            color: var(--success);
+        }
+
+        .tag-warning {
+            background: rgba(255, 149, 0, 0.12);
+            color: var(--warning);
+        }
+
+        .tag-danger {
+            background: rgba(255, 59, 48, 0.12);
+            color: var(--danger);
+        }
+
+        /* 筛选器 */
+        .filter-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .filter-input {
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            min-width: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-select {
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            min-width: 150px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* 图表容器 */
+        .chart-container {
+            height: 400px;
+            margin: 24px 0;
+        }
+
+        /* 页面切换 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        /* 详情展示 */
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .detail-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-leaf"></i>
+            </div>
+            <div class="logo-text">元膳健康</div>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item active" data-page="dashboard" onclick="switchPage('dashboard')">
+                <i class="fas fa-chart-line"></i>
+                <span>数据概览</span>
+            </div>
+            <div class="nav-item" data-page="users" onclick="switchPage('users')">
+                <i class="fas fa-users"></i>
+                <span>用户数据</span>
+            </div>
+            <div class="nav-item" data-page="analysis" onclick="switchPage('analysis')">
+                <i class="fas fa-chart-pie"></i>
+                <span>数据分析</span>
+            </div>
+            <div class="nav-item" data-page="export" onclick="switchPage('export')">
+                <i class="fas fa-download"></i>
+                <span>数据导出</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>管理员后台</h1>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="window.location.href='元膳健康官网首页（升级版）.html'">
+                    <i class="fas fa-arrow-left"></i>
+                    返回官网
+                </button>
+                <button class="btn btn-primary" onclick="exportAllData()">
+                    <i class="fas fa-download"></i>
+                    导出全部数据
+                </button>
+            </div>
+        </div>
+
+        <!-- 数据概览页面 -->
+        <div class="page active" id="dashboard">
+            <!-- 统计卡片 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-value" id="totalUsers">0</div>
+                    <div class="stat-label">总用户数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <div class="stat-value" id="completedAssessments">0</div>
+                    <div class="stat-label">完成评估</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div class="stat-value" id="avgHealthScore">0</div>
+                    <div class="stat-label">平均健康分</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="stat-value" id="todayUsers">0</div>
+                    <div class="stat-label">今日新增</div>
+                </div>
+            </div>
+
+            <!-- 图表 -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">用户趋势分析</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">健康目标分布</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="goalChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 用户数据页面 -->
+        <div class="page" id="users">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">用户数据列表</h2>
+                    <button class="btn btn-primary" onclick="exportUserData()">
+                        <i class="fas fa-download"></i>
+                        导出用户数据
+                    </button>
+                </div>
+
+                <div class="filter-bar">
+                    <input type="text" class="filter-input" id="searchInput" placeholder="搜索用户ID或姓名..." onkeyup="filterUsers()">
+                    <select class="filter-select" id="genderFilter" onchange="filterUsers()">
+                        <option value="">全部性别</option>
+                        <option value="male">男</option>
+                        <option value="female">女</option>
+                    </select>
+                    <select class="filter-select" id="goalFilter" onchange="filterUsers()">
+                        <option value="">全部健康目标</option>
+                        <option value="maintain">保持健康</option>
+                        <option value="weightloss">减脂瘦身</option>
+                        <option value="musclegain">增肌塑形</option>
+                        <option value="disease">慢性病管理</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>用户ID</th>
+                                <th>性别</th>
+                                <th>年龄</th>
+                                <th>BMI</th>
+                                <th>健康目标</th>
+                                <th>健康评分</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据分析页面 -->
+        <div class="page" id="analysis">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">深度数据分析</h2>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 24px;">
+                    <div style="background: var(--bg-secondary); padding: 20px; border-radius: 12px;">
+                        <h3 style="margin: 0 0 16px 0; font-size: 1.1rem;">年龄分布</h3>
+                        <div style="height: 250px;">
+                            <canvas id="ageDistributionChart"></canvas>
+                        </div>
+                    </div>
+                    <div style="background: var(--bg-secondary); padding: 20px; border-radius: 12px;">
+                        <h3 style="margin: 0 0 16px 0; font-size: 1.1rem;">BMI分布</h3>
+                        <div style="height: 250px;">
+                            <canvas id="bmiDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 24px;">
+                    <div style="background: var(--bg-secondary); padding: 20px; border-radius: 12px;">
+                        <h3 style="margin: 0 0 16px 0; font-size: 1.1rem;">慢性病分布</h3>
+                        <div style="height: 250px;">
+                            <canvas id="diseaseDistributionChart"></canvas>
+                        </div>
+                    </div>
+                    <div style="background: var(--bg-secondary); padding: 20px; border-radius: 12px;">
+                        <h3 style="margin: 0 0 16px 0; font-size: 1.1rem;">中医体质分布</h3>
+                        <div style="height: 250px;">
+                            <canvas id="constitutionDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-secondary); padding: 24px; border-radius: 12px;">
+                    <h3 style="margin: 0 0 20px 0; font-size: 1.1rem;">市场调研关键指标</h3>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--primary-color);" id="avgAge">0</div>
+                            <div style="color: var(--text-secondary); margin-top: 8px;">平均年龄</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--success);" id="avgBMI">0</div>
+                            <div style="color: var(--text-secondary); margin-top: 8px;">平均BMI</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--warning);" id="diseaseRate">0%</div>
+                            <div style="color: var(--text-secondary); margin-top: 8px;">慢性病比例</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--danger);" id="conversionRate">0%</div>
+                            <div style="color: var(--text-secondary); margin-top: 8px;">评估完成率</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据导出页面 -->
+        <div class="page" id="export">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">数据导出中心</h2>
+                </div>
+
+                <div style="display: grid; gap: 24px;">
+                    <div style="background: var(--bg-secondary); padding: 24px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3 style="margin: 0 0 8px 0; font-size: 1.2rem;">用户基本信息</h3>
+                            <p style="margin: 0; color: var(--text-secondary);">导出所有用户的基本信息数据（用于市场调研）</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="exportUserBasicData()">
+                            <i class="fas fa-download"></i>
+                            导出Excel
+                        </button>
+                    </div>
+
+                    <div style="background: var(--bg-secondary); padding: 24px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3 style="margin: 0 0 8px 0; font-size: 1.2rem;">健康评估数据</h3>
+                            <p style="margin: 0; color: var(--text-secondary);">导出用户的健康评估详细数据（用于融资报告）</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="exportAssessmentData()">
+                            <i class="fas fa-download"></i>
+                            导出Excel
+                        </button>
+                    </div>
+
+                    <div style="background: var(--bg-secondary); padding: 24px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3 style="margin: 0 0 8px 0; font-size: 1.2rem;">统计分析报告</h3>
+                            <p style="margin: 0; color: var(--text-secondary);">导出包含图表和关键指标的完整分析报告</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="exportAnalysisReport()">
+                            <i class="fas fa-download"></i>
+                            导出报告
+                        </button>
+                    </div>
+
+                    <div style="background: var(--bg-secondary); padding: 24px; border-radius: 12px;">
+                        <h3 style="margin: 0 0 16px 0; font-size: 1.2rem;">自定义导出</h3>
+                        <p style="margin: 0 0 16px 0; color: var(--text-secondary);">选择需要导出的数据字段和时间范围</p>
+                        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                            <input type="date" class="filter-input" id="startDate">
+                            <input type="date" class="filter-input" id="endDate">
+                            <select class="filter-select" id="exportType">
+                                <option value="all">全部数据</option>
+                                <option value="basic">基本信息</option>
+                                <option value="health">健康数据</option>
+                                <option value="constitution">体质数据</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="exportCustomData()">
+                                <i class="fas fa-download"></i>
+                                自定义导出
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用户详情模态框 -->
+    <div class="modal" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">用户详情</h2>
+                <button class="close-btn" onclick="closeModal()">×</button>
+            </div>
+            <div id="userDetailContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟用户数据
+        let usersData = [];
+
+        // 生成模拟数据
+        function generateMockData() {
+            // 先尝试从LocalStorage获取真实数据
+            const realData = localStorage.getItem('yuanshan_users');
+            if (realData) {
+                try {
+                    const parsedData = JSON.parse(realData);
+                    usersData = parsedData.map(record => ({
+                        id: record.id,
+                        gender: record.basic.gender,
+                        age: record.basic.age,
+                        height: record.basic.height,
+                        weight: record.basic.weight,
+                        bmi: record.basic.bmi,
+                        goal: record.goal,
+                        diseases: record.diseases || [],
+                        score: record.score,
+                        constitution: record.constitution || 0,
+                        createdAt: record.createdAt
+                    }));
+
+                    // 如果真实数据少于50条，补充模拟数据
+                    if (usersData.length < 50) {
+                        addMockData(50 - usersData.length);
+                    }
+                    return;
+                } catch (e) {
+                    console.error('解析用户数据失败', e);
+                }
+            }
+
+            // 如果没有真实数据，生成100条模拟数据
+            addMockData(100);
+        }
+
+        // 添加模拟数据
+        function addMockData(count) {
+            const goals = ['maintain', 'weightloss', 'musclegain', 'disease'];
+            const diseases = ['hypertension', 'diabetes', 'hyperlipidemia', 'gout', 'none'];
+
+            for (let i = 0; i < count; i++) {
+                const gender = Math.random() > 0.5 ? 'male' : 'female';
+                const age = Math.floor(Math.random() * 50) + 18;
+                const height = Math.floor(Math.random() * 30) + 150;
+                const weight = Math.floor(Math.random() * 50) + 40;
+                const bmi = (weight / Math.pow(height / 100, 2)).toFixed(1);
+                const goal = goals[Math.floor(Math.random() * goals.length)];
+                const disease = diseases[Math.floor(Math.random() * diseases.length)];
+                const score = Math.floor(Math.random() * 30) + 70;
+
+                usersData.push({
+                    id: Date.now() + i,
+                    gender: gender,
+                    age: age,
+                    height: height,
+                    weight: weight,
+                    bmi: bmi,
+                    goal: goal,
+                    diseases: [disease],
+                    score: score,
+                    constitution: Math.floor(Math.random() * 9),
+                    createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString()
+                });
+            }
+        }
+
+        // 页面切换
+        function switchPage(pageId) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === pageId) {
+                    item.classList.add('active');
+                }
+            });
+
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+                if (page.id === pageId) {
+                    page.classList.add('active');
+                }
+            });
+
+            if (pageId === 'analysis') {
+                setTimeout(() => {
+                    initAnalysisCharts();
+                }, 100);
+            }
+        }
+
+        // 更新统计数据
+        function updateStats() {
+            document.getElementById('totalUsers').textContent = usersData.length;
+            document.getElementById('completedAssessments').textContent = usersData.length;
+
+            const avgScore = usersData.reduce((sum, user) => sum + user.score, 0) / usersData.length;
+            document.getElementById('avgHealthScore').textContent = avgScore.toFixed(0);
+
+            const today = new Date().toDateString();
+            const todayCount = usersData.filter(user => new Date(user.createdAt).toDateString() === today).length;
+            document.getElementById('todayUsers').textContent = todayCount;
+        }
+
+        // 渲染用户表格
+        function renderUserTable(users) {
+            const tbody = document.getElementById('userTableBody');
+            const goalLabels = {
+                'maintain': '保持健康',
+                'weightloss': '减脂瘦身',
+                'musclegain': '增肌塑形',
+                'disease': '慢性病管理'
+            };
+
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td>#${user.id}</td>
+                    <td>${user.gender === 'male' ? '男' : '女'}</td>
+                    <td>${user.age}</td>
+                    <td>${user.bmi}</td>
+                    <td>${goalLabels[user.goal]}</td>
+                    <td><span class="tag ${user.score >= 80 ? 'tag-success' : user.score >= 60 ? 'tag-warning' : 'tag-danger'}">${user.score}</span></td>
+                    <td>${new Date(user.createdAt).toLocaleDateString('zh-CN')}</td>
+                    <td>
+                        <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" onclick="showUserDetail(${user.id})">
+                            <i class="fas fa-eye"></i>
+                            查看
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 筛选用户
+        function filterUsers() {
+            const searchValue = document.getElementById('searchInput').value.toLowerCase();
+            const genderValue = document.getElementById('genderFilter').value;
+            const goalValue = document.getElementById('goalFilter').value;
+
+            let filtered = usersData.filter(user => {
+                const matchSearch = user.id.toString().includes(searchValue);
+                const matchGender = !genderValue || user.gender === genderValue;
+                const matchGoal = !goalValue || user.goal === goalValue;
+                return matchSearch && matchGender && matchGoal;
+            });
+
+            renderUserTable(filtered);
+        }
+
+        // 显示用户详情
+        function showUserDetail(userId) {
+            const user = usersData.find(u => u.id === userId);
+            if (!user) return;
+
+            const goalLabels = {
+                'maintain': '保持健康',
+                'weightloss': '减脂瘦身',
+                'musclegain': '增肌塑形',
+                'disease': '慢性病管理'
+            };
+
+            document.getElementById('userDetailContent').innerHTML = `
+                <div class="detail-item">
+                    <span class="detail-label">用户ID</span>
+                    <span class="detail-value">#${user.id}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">性别</span>
+                    <span class="detail-value">${user.gender === 'male' ? '男' : '女'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">年龄</span>
+                    <span class="detail-value">${user.age}岁</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">身高</span>
+                    <span class="detail-value">${user.height}cm</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">体重</span>
+                    <span class="detail-value">${user.weight}kg</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">BMI</span>
+                    <span class="detail-value">${user.bmi}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">健康目标</span>
+                    <span class="detail-value">${goalLabels[user.goal]}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">健康评分</span>
+                    <span class="detail-value">${user.score}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">创建时间</span>
+                    <span class="detail-value">${new Date(user.createdAt).toLocaleString('zh-CN')}</span>
+                </div>
+            `;
+
+            document.getElementById('userModal').style.display = 'flex';
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            document.getElementById('userModal').style.display = 'none';
+        }
+
+        // 初始化趋势图
+        function initTrendChart() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+
+            const labels = [];
+            const data = [];
+            for (let i = 29; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                labels.push(`${date.getMonth() + 1}/${date.getDate()}`);
+                data.push(Math.floor(Math.random() * 20) + 10);
+            }
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '每日新增用户',
+                        data: data,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // 初始化健康目标图
+        function initGoalChart() {
+            const ctx = document.getElementById('goalChart').getContext('2d');
+
+            const goalCounts = {
+                'maintain': 0,
+                'weightloss': 0,
+                'musclegain': 0,
+                'disease': 0
+            };
+
+            usersData.forEach(user => {
+                goalCounts[user.goal]++;
+            });
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['保持健康', '减脂瘦身', '增肌塑形', '慢性病管理'],
+                    datasets: [{
+                        data: Object.values(goalCounts),
+                        backgroundColor: [
+                            'rgba(102, 126, 234, 0.8)',
+                            'rgba(52, 199, 89, 0.8)',
+                            'rgba(255, 149, 0, 0.8)',
+                            'rgba(255, 59, 48, 0.8)'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // 初始化分析图表
+        function initAnalysisCharts() {
+            // 年龄分布
+            const ageCtx = document.getElementById('ageDistributionChart').getContext('2d');
+            const ageGroups = {
+                '18-25': 0,
+                '26-35': 0,
+                '36-45': 0,
+                '46-55': 0,
+                '55+': 0
+            };
+
+            usersData.forEach(user => {
+                if (user.age <= 25) ageGroups['18-25']++;
+                else if (user.age <= 35) ageGroups['26-35']++;
+                else if (user.age <= 45) ageGroups['36-45']++;
+                else if (user.age <= 55) ageGroups['46-55']++;
+                else ageGroups['55+']++;
+            });
+
+            new Chart(ageCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(ageGroups),
+                    datasets: [{
+                        label: '用户数量',
+                        data: Object.values(ageGroups),
+                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // BMI分布
+            const bmiCtx = document.getElementById('bmiDistributionChart').getContext('2d');
+            const bmiGroups = {
+                '偏瘦 (<18.5)': 0,
+                '正常 (18.5-24)': 0,
+                '超重 (24-28)': 0,
+                '肥胖 (>28)': 0
+            };
+
+            usersData.forEach(user => {
+                if (user.bmi < 18.5) bmiGroups['偏瘦 (<18.5)']++;
+                else if (user.bmi < 24) bmiGroups['正常 (18.5-24)']++;
+                else if (user.bmi < 28) bmiGroups['超重 (24-28)']++;
+                else bmiGroups['肥胖 (>28)']++;
+            });
+
+            new Chart(bmiCtx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(bmiGroups),
+                    datasets: [{
+                        data: Object.values(bmiGroups),
+                        backgroundColor: [
+                            'rgba(255, 149, 0, 0.8)',
+                            'rgba(52, 199, 89, 0.8)',
+                            'rgba(255, 59, 48, 0.8)',
+                            'rgba(102, 126, 234, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // 慢性病分布
+            const diseaseCtx = document.getElementById('diseaseDistributionChart').getContext('2d');
+            const diseaseCounts = {
+                '高血压': 0,
+                '糖尿病': 0,
+                '高血脂': 0,
+                '痛风': 0,
+                '无': 0
+            };
+
+            usersData.forEach(user => {
+                if (user.diseases[0] === 'hypertension') diseaseCounts['高血压']++;
+                else if (user.diseases[0] === 'diabetes') diseaseCounts['糖尿病']++;
+                else if (user.diseases[0] === 'hyperlipidemia') diseaseCounts['高血脂']++;
+                else if (user.diseases[0] === 'gout') diseaseCounts['痛风']++;
+                else diseaseCounts['无']++;
+            });
+
+            new Chart(diseaseCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(diseaseCounts),
+                    datasets: [{
+                        data: Object.values(diseaseCounts),
+                        backgroundColor: [
+                            'rgba(255, 59, 48, 0.8)',
+                            'rgba(255, 149, 0, 0.8)',
+                            'rgba(102, 126, 234, 0.8)',
+                            'rgba(175, 82, 222, 0.8)',
+                            'rgba(52, 199, 89, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // 体质分布
+            const constitutionCtx = document.getElementById('constitutionDistributionChart').getContext('2d');
+            const constitutionCounts = {
+                '平和质': 0,
+                '气虚质': 0,
+                '阳虚质': 0,
+                '阴虚质': 0,
+                '痰湿质': 0,
+                '湿热质': 0,
+                '血瘀质': 0,
+                '气郁质': 0,
+                '特禀质': 0
+            };
+
+            usersData.forEach(user => {
+                const types = Object.keys(constitutionCounts);
+                constitutionCounts[types[user.constitution % 9]]++;
+            });
+
+            new Chart(constitutionCtx, {
+                type: 'radar',
+                data: {
+                    labels: Object.keys(constitutionCounts),
+                    datasets: [{
+                        label: '用户数量',
+                        data: Object.values(constitutionCounts),
+                        backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                        borderColor: '#667eea',
+                        pointBackgroundColor: '#667eea'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // 更新关键指标
+            const avgAge = usersData.reduce((sum, user) => sum + user.age, 0) / usersData.length;
+            const avgBMI = usersData.reduce((sum, user) => sum + parseFloat(user.bmi), 0) / usersData.length;
+            const diseaseRate = usersData.filter(user => user.diseases[0] !== 'none').length / usersData.length * 100;
+
+            document.getElementById('avgAge').textContent = avgAge.toFixed(1);
+            document.getElementById('avgBMI').textContent = avgBMI.toFixed(1);
+            document.getElementById('diseaseRate').textContent = diseaseRate.toFixed(1) + '%';
+            document.getElementById('conversionRate').textContent = '100%';
+        }
+
+        // 导出用户数据为Excel
+        function exportUserData() {
+            const goalLabels = {
+                'maintain': '保持健康',
+                'weightloss': '减脂瘦身',
+                'musclegain': '增肌塑形',
+                'disease': '慢性病管理'
+            };
+
+            const data = usersData.map(user => ({
+                '用户ID': user.id,
+                '性别': user.gender === 'male' ? '男' : '女',
+                '年龄': user.age,
+                '身高': user.height,
+                '体重': user.weight,
+                'BMI': user.bmi,
+                '健康目标': goalLabels[user.goal],
+                '健康评分': user.score,
+                '创建时间': new Date(user.createdAt).toLocaleString('zh-CN')
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, '用户数据');
+
+            XLSX.writeFile(wb, `元膳健康用户数据_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.xlsx`);
+        }
+
+        // 导出所有数据
+        function exportAllData() {
+            const goalLabels = {
+                'maintain': '保持健康',
+                'weightloss': '减脂瘦身',
+                'musclegain': '增肌塑形',
+                'disease': '慢性病管理'
+            };
+
+            const data = usersData.map(user => ({
+                '用户ID': user.id,
+                '性别': user.gender === 'male' ? '男' : '女',
+                '年龄': user.age,
+                '身高': user.height,
+                '体重': user.weight,
+                'BMI': user.bmi,
+                '健康目标': goalLabels[user.goal],
+                '慢性病': user.diseases[0],
+                '健康评分': user.score,
+                '体质类型': user.constitution,
+                '创建时间': new Date(user.createdAt).toLocaleString('zh-CN')
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, '全部数据');
+
+            XLSX.writeFile(wb, `元膳健康全部数据_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.xlsx`);
+        }
+
+        // 导出基本信息
+        function exportUserBasicData() {
+            const data = usersData.map(user => ({
+                '用户ID': user.id,
+                '性别': user.gender === 'male' ? '男' : '女',
+                '年龄': user.age,
+                '身高': user.height,
+                '体重': user.weight,
+                'BMI': user.bmi,
+                '创建时间': new Date(user.createdAt).toLocaleString('zh-CN')
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, '基本信息');
+
+            XLSX.writeFile(wb, `元膳健康基本信息_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.xlsx`);
+        }
+
+        // 导出评估数据
+        function exportAssessmentData() {
+            const goalLabels = {
+                'maintain': '保持健康',
+                'weightloss': '减脂瘦身',
+                'musclegain': '增肌塑形',
+                'disease': '慢性病管理'
+            };
+
+            const data = usersData.map(user => ({
+                '用户ID': user.id,
+                '年龄': user.age,
+                'BMI': user.bmi,
+                '健康目标': goalLabels[user.goal],
+                '慢性病': user.diseases[0],
+                '健康评分': user.score,
+                '体质类型': user.constitution
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, '健康评估数据');
+
+            XLSX.writeFile(wb, `元膳健康评估数据_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.xlsx`);
+        }
+
+        // 导出分析报告
+        function exportAnalysisReport() {
+            const goalLabels = {
+                'maintain': '保持健康',
+                'weightloss': '减脂瘦身',
+                'musclegain': '增肌塑形',
+                'disease': '慢性病管理'
+            };
+
+            // 统计数据
+            const stats = {
+                '总用户数': usersData.length,
+                '完成评估数': usersData.length,
+                '平均年龄': (usersData.reduce((sum, user) => sum + user.age, 0) / usersData.length).toFixed(1),
+                '平均BMI': (usersData.reduce((sum, user) => sum + parseFloat(user.bmi), 0) / usersData.length).toFixed(1),
+                '平均健康分': (usersData.reduce((sum, user) => sum + user.score, 0) / usersData.length).toFixed(0),
+                '慢性病比例': (usersData.filter(user => user.diseases[0] !== 'none').length / usersData.length * 100).toFixed(1) + '%'
+            };
+
+            // 目标分布
+            const goalCounts = {
+                'maintain': 0,
+                'weightloss': 0,
+                'musclegain': 0,
+                'disease': 0
+            };
+            usersData.forEach(user => goalCounts[user.goal]++);
+
+            const reportData = [
+                { '指标': '数值', '说明': '' },
+                { '指标': '=== 数据概览 ===', '说明': '' },
+                ...Object.entries(stats).map(([key, value]) => ({ '指标': key, '说明': value })),
+                { '指标': '', '说明': '' },
+                { '指标': '=== 健康目标分布 ===', '说明': '' },
+                ...Object.entries(goalLabels).map(([key, label]) => ({
+                    '指标': label,
+                    '说明': goalCounts[key] + '人 (' + (goalCounts[key] / usersData.length * 100).toFixed(1) + '%)'
+                }))
+            ];
+
+            const ws = XLSX.utils.json_to_sheet(reportData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, '分析报告');
+
+            XLSX.writeFile(wb, `元膳健康分析报告_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.xlsx`);
+        }
+
+        // 自定义导出
+        function exportCustomData() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const exportType = document.getElementById('exportType').value;
+
+            let filteredUsers = usersData;
+
+            if (startDate) {
+                filteredUsers = filteredUsers.filter(user => new Date(user.createdAt) >= new Date(startDate));
+            }
+
+            if (endDate) {
+                filteredUsers = filteredUsers.filter(user => new Date(user.createdAt) <= new Date(endDate));
+            }
+
+            const goalLabels = {
+                'maintain': '保持健康',
+                'weightloss': '减脂瘦身',
+                'musclegain': '增肌塑形',
+                'disease': '慢性病管理'
+            };
+
+            let data = [];
+
+            switch (exportType) {
+                case 'basic':
+                    data = filteredUsers.map(user => ({
+                        '用户ID': user.id,
+                        '性别': user.gender === 'male' ? '男' : '女',
+                        '年龄': user.age,
+                        '身高': user.height,
+                        '体重': user.weight,
+                        'BMI': user.bmi
+                    }));
+                    break;
+                case 'health':
+                    data = filteredUsers.map(user => ({
+                        '用户ID': user.id,
+                        '健康目标': goalLabels[user.goal],
+                        '慢性病': user.diseases[0],
+                        '健康评分': user.score
+                    }));
+                    break;
+                case 'constitution':
+                    data = filteredUsers.map(user => ({
+                        '用户ID': user.id,
+                        '体质类型': user.constitution
+                    }));
+                    break;
+                default:
+                    data = filteredUsers.map(user => ({
+                        '用户ID': user.id,
+                        '性别': user.gender === 'male' ? '男' : '女',
+                        '年龄': user.age,
+                        '身高': user.height,
+                        '体重': user.weight,
+                        'BMI': user.bmi,
+                        '健康目标': goalLabels[user.goal],
+                        '慢性病': user.diseases[0],
+                        '健康评分': user.score,
+                        '体质类型': user.constitution,
+                        '创建时间': new Date(user.createdAt).toLocaleString('zh-CN')
+                    }));
+            }
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, '自定义导出');
+
+            XLSX.writeFile(wb, `元膳健康自定义数据_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.xlsx`);
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 动态加载Chart.js和SheetJS,提升首屏性能
+            const chartScript = document.createElement('script');
+            chartScript.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';
+            chartScript.async = true;
+            document.head.appendChild(chartScript);
+
+            const xlsxScript = document.createElement('script');
+            xlsxScript.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+            xlsxScript.async = true;
+            document.head.appendChild(xlsxScript);
+
+            generateMockData();
+            updateStats();
+            renderUserTable(usersData);
+
+            // 等待Chart.js加载完成后再初始化图表
+            chartScript.onload = function() {
+                initTrendChart();
+                initGoalChart();
+            };
+
+            // 点击模态框背景关闭
+            document.getElementById('userModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

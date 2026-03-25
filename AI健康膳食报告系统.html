@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI健康膳食报告系统 - 重庆元膳健康科技</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        :root {
+            /* Apple/Huawei风格配色 - 更加柔和现代 */
+            --primary: #007AFF;
+            --primary-light: #5AC8FA;
+            --primary-dark: #0051D5;
+            --success: #34C759;
+            --warning: #FF9500;
+            --danger: #FF3B30;
+            --text-primary: #1D1D1F;
+            --text-secondary: #86868B;
+            --text-tertiary: #AEAEB2;
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F5F5F7;
+            --bg-tertiary: #E8E8ED;
+            --card-bg: #FFFFFF;
+            --border-color: #E5E5EA;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-xl: 28px;
+        }
+        
+        body.dark-mode {
+            --text-primary: #F5F5F7;
+            --text-secondary: #AEAEB2;
+            --text-tertiary: #86868B;
+            --bg-primary: #1C1C1E;
+            --bg-secondary: #2C2C2E;
+            --bg-tertiary: #3A3A3C;
+            --card-bg: #2C2C2E;
+            --border-color: #48484A;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            font-size: 17px;
+            letter-spacing: -0.022em;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        
+        /* 顶部导航 - Apple风格 */
+        header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        body.dark-mode header {
+            background: rgba(28, 28, 30, 0.8);
+            border-bottom-color: var(--border-color);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.03em;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .theme-toggle {
+            background: var(--bg-tertiary);
+            border: none;
+            padding: 10px 18px;
+            border-radius: var(--radius-xl);
+            cursor: pointer;
+            color: var(--text-primary);
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .theme-toggle:hover {
+            background: var(--border-color);
+            transform: scale(1.02);
+        }
+        
+        .theme-toggle:active {
+            transform: scale(0.98);
+        }
+        
+        /* 主容器 */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px 60px;
+        }
+        
+        /* 现代卡片风格 - 参考Apple/Huawei */
+        .glass-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .glass-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        
+        body.dark-mode .glass-card {
+            border-color: var(--border-color);
+        }
+        
+        /* 标题样式 */
+        .card-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 32px;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+        }
+        
+        /* 欢迎页 */
+        .welcome-section {
+            text-align: center;
+            padding: 80px 40px;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .welcome-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .welcome-desc {
+            font-size: 19px;
+            color: var(--text-secondary);
+            margin-bottom: 48px;
+            line-height: 1.6;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .start-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 18px 48px;
+            font-size: 17px;
+            font-weight: 600;
+            border-radius: var(--radius-xl);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+            letter-spacing: -0.02em;
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+        }
+        
+        .start-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+        }
+        
+        /* 进度条 */
+        .progress-container {
+            margin-bottom: 32px;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background: var(--bg-tertiary);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 2px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .progress-text {
+            font-size: 15px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        /* 表单样式 - Apple风格 */
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-secondary);
+            border: 2px solid transparent;
+            border-radius: var(--radius-md);
+            font-size: 17px;
+            font-family: inherit;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            background: var(--bg-primary);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+        }
+        
+        .form-input::placeholder {
+            color: var(--text-tertiary);
+        }
+        
+        /* 选项按钮 - 现代化设计 */
+        .option-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .option-btn {
+            padding: 12px 24px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 500;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body.dark-mode .option-btn {
+            background: var(--bg-dark-tertiary);
+            border-color: var(--border-color);
+            color: var(--text-dark-primary);
+        }
+
+        body.dark-mode .option-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+        
+        .option-btn:hover {
+            border-color: var(--primary);
+            background: var(--bg-primary);
+        }
+
+        body.dark-mode .option-btn:hover {
+            background: var(--bg-dark-secondary);
+        }
+        
+        .option-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.25);
+        }
+        
+        /* 体质问卷 */
+        .constitution-question {
+            margin-bottom: 28px;
+            padding: 24px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+        
+        .constitution-question h4 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+        
+        .constitution-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .constitution-option {
+            padding: 10px 20px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-primary);
+            font-size: 15px;
+            font-weight: 500;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        .constitution-option:hover {
+            border-color: var(--primary);
+            background: var(--bg-secondary);
+        }
+        
+        .constitution-option.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.25);
+        }
+        
+        /* 按钮样式 */
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: var(--radius-xl);
+            cursor: pointer;
+            font-size: 17px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            margin-right: 12px;
+            letter-spacing: -0.02em;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        body.dark-mode .btn-secondary {
+            background: var(--bg-dark-tertiary);
+            border-color: var(--border-color);
+            color: var(--text-dark-primary);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.25);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 122, 255, 0.35);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.25);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--border-color);
+            transform: translateY(-2px);
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* 报告网格 */
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        /* 评分圆环 */
+        .score-circle {
+            position: relative;
+            width: 240px;
+            height: 240px;
+            margin: 0 auto;
+        }
+        
+        .score-number {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        
+        .score-number .value {
+            font-size: 56px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.04em;
+            line-height: 1;
+        }
+        
+        .score-number .label {
+            font-size: 15px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-top: 8px;
+        }
+        
+        /* 营养素网格 */
+        .nutrition-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .nutrition-item {
+            text-align: center;
+            padding: 20px 16px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .nutrition-item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+        
+        .nutrition-item .value {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
+        }
+        
+        .nutrition-item .label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        /* 膳食计划表格 */
+        .meal-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+        
+        .meal-table th,
+        .meal-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 15px;
+        }
+        
+        .meal-table th {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .meal-table tr:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .meal-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* 食材标签 */
+        .ingredient-tag {
+            display: inline-block;
+            padding: 8px 16px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 500;
+            margin: 6px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .ingredient-tag.recommended {
+            background: rgba(52, 199, 89, 0.1);
+            color: var(--success);
+            border-color: rgba(52, 199, 89, 0.3);
+        }
+        
+        .ingredient-tag.avoid {
+            background: rgba(255, 59, 48, 0.1);
+            color: var(--danger);
+            border-color: rgba(255, 59, 48, 0.3);
+        }
+        
+        /* AI对话入口 */
+        .ai-chat-box {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            z-index: 1000;
+        }
+        
+        .chat-trigger {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 122, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .chat-trigger:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 28px rgba(0, 122, 255, 0.5);
+        }
+        
+        .chat-trigger svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .welcome-title {
+                font-size: 36px;
+            }
+            
+            .card-title {
+                font-size: 24px;
+            }
+            
+            .glass-card {
+                padding: 24px;
+            }
+            
+            .report-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .score-circle {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .score-number .value {
+                font-size: 48px;
+            }
+            
+            .header-content {
+                padding: 0 16px;
+            }
+            
+            main {
+                padding: 24px 16px 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🌱</div>
+                <span>元膳健康科技</span>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <span id="themeIcon">🌙</span>
+                <span>主题</span>
+            </button>
+        </div>
+    </header>
+    
+    <main>
+        <!-- 欢迎页 -->
+        <div id="welcomePage" class="glass-card welcome-section">
+            <h1 class="welcome-title">AI智能健康膳食定制</h1>
+            <p class="welcome-desc">
+                基于AI算法驱动，深度融合多维健康数据，为您提供"千人千面"的个性化健康膳食方案<br>
+                准确率达92%以上，助力实现健康中国2030目标
+            </p>
+            <button class="start-btn" onclick="startAssessment()">开始健康评估</button>
+        </div>
+        
+        <!-- 基础信息录入 -->
+        <div id="basicInfoPage" class="hidden">
+            <div class="glass-card">
+                <h2 class="card-title">📋 基础健康信息录入</h2>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress1" style="width: 25%"></div>
+                    </div>
+                    <p class="progress-text">步骤 1/4：基础信息</p>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">性别</label>
+                        <select class="form-input" id="gender">
+                            <option value="male">男</option>
+                            <option value="female">女</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">年龄</label>
+                        <input type="number" class="form-input" id="age" value="30" min="1" max="100">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">身高 (cm)</label>
+                        <input type="number" class="form-input" id="height" value="170" min="100" max="250">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">体重 (kg)</label>
+                        <input type="number" class="form-input" id="weight" value="65" min="30" max="200">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">健康目标</label>
+                    <div class="option-group">
+                        <button class="option-btn" onclick="selectOption(this, 'goal')" data-value="maintain">保持健康</button>
+                        <button class="option-btn" onclick="selectOption(this, 'goal')" data-value="weightloss">减脂瘦身</button>
+                        <button class="option-btn" onclick="selectOption(this, 'goal')" data-value="musclegain">增肌塑形</button>
+                        <button class="option-btn active" onclick="selectOption(this, 'goal')" data-value="disease">慢性病管理</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">慢性病史（多选）</label>
+                    <div class="option-group">
+                        <button class="option-btn" onclick="toggleOption(this, 'disease')" data-value="hypertension">高血压</button>
+                        <button class="option-btn" onclick="toggleOption(this, 'disease')" data-value="diabetes">糖尿病</button>
+                        <button class="option-btn" onclick="toggleOption(this, 'disease')" data-value="hyperlipidemia">高血脂</button>
+                        <button class="option-btn" onclick="toggleOption(this, 'disease')" data-value="gout">痛风</button>
+                        <button class="option-btn" onclick="toggleOption(this, 'disease')" data-value="none">无</button>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 24px;">
+                    <button class="btn btn-secondary" onclick="goToPage('welcomePage')">返回</button>
+                    <button class="btn btn-primary" onclick="goToConstitution()">下一步</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 中医体质辨识 -->
+        <div id="constitutionPage" class="hidden">
+            <div class="glass-card">
+                <h2 class="card-title">🧬 中医体质辨识</h2>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress2" style="width: 50%"></div>
+                    </div>
+                    <p class="progress-text">步骤 2/4：体质分析</p>
+                </div>
+                
+                <p style="color: var(--text-secondary); margin-bottom: 24px;">请根据您的实际情况选择最符合的描述：</p>
+                
+                <div id="constitutionQuestions"></div>
+                
+                <div style="margin-top: 28px;">
+                    <button class="btn btn-secondary" onclick="goToPage('basicInfoPage')">上一步</button>
+                    <button class="btn btn-primary" onclick="generateConstitution()">生成体质分析</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 饮食偏好 -->
+        <div id="preferencePage" class="hidden">
+            <div class="glass-card">
+                <h2 class="card-title">🍽️ 饮食偏好设置</h2>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress3" style="width: 75%"></div>
+                    </div>
+                    <p class="progress-text">步骤 3/4：饮食偏好</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">偏好菜系</label>
+                    <div class="option-group">
+                        <button class="option-btn active" onclick="selectOption(this, 'cuisine')" data-value="sichuan">川菜（健康改良版）</button>
+                        <button class="option-btn" onclick="selectOption(this, 'cuisine')" data-value="guangdong">粤菜</button>
+                        <button class="option-btn" onclick="selectOption(this, 'cuisine')" data-value="shandong">鲁菜</button>
+                        <button class="option-btn" onclick="selectOption(this, 'cuisine')" data-value="western">西餐</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">忌口食材</label>
+                    <div class="option-group">
+                        <button class="option-btn" onclick="toggleOption(this, 'avoid')" data-value="seafood">海鲜</button>
+                        <button class="option-btn" onclick="toggleOption(this, 'avoid')" data-value="peanut">花生</button>
+                        <button class="option-btn" onclick="toggleOption(this, 'avoid')" data-value="milk">牛奶</button>
+                        <button class="option-btn" onclick="toggleOption(this, 'avoid')" data-value="eggs">鸡蛋</button>
+                        <button class="option-btn" onclick="toggleOption(this, 'avoid')" data-value="none">无</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">膳食预算</label>
+                    <div class="option-group">
+                        <button class="option-btn" onclick="selectOption(this, 'budget')" data-value="30">¥30以下</button>
+                        <button class="option-btn active" onclick="selectOption(this, 'budget')" data-value="50">¥30-50</button>
+                        <button class="option-btn" onclick="selectOption(this, 'budget')" data-value="80">¥50-80</button>
+                        <button class="option-btn" onclick="selectOption(this, 'budget')" data-value="100">¥80以上</button>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 24px;">
+                    <button class="btn btn-secondary" onclick="goToPage('constitutionPage')">上一步</button>
+                    <button class="btn btn-primary" onclick="generateReport()">生成报告</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 健康报告 -->
+        <div id="reportPage" class="hidden">
+            <div class="glass-card">
+                <h2 class="card-title">📊 您的个性化健康膳食报告</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 32px;">基于AI算法分析，为您定制专属膳食方案</p>
+                
+                <div class="report-grid">
+                    <!-- 健康评分 -->
+                    <div class="glass-card" style="text-align: center;">
+                        <h3 style="font-size: 20px; font-weight: 600; color: var(--primary); margin-bottom: 24px;">综合健康评分</h3>
+                        <div class="score-circle">
+                            <canvas id="scoreChart"></canvas>
+                            <div class="score-number">
+                                <div class="value" id="healthScore">85</div>
+                                <div class="label">健康指数</div>
+                            </div>
+                        </div>
+                        <p style="margin-top: 24px; color: var(--text-secondary);">您的健康状况良好，继续保持！</p>
+                    </div>
+
+                    <!-- 个人信息概览 -->
+                    <div class="glass-card">
+                        <h3 style="font-size: 20px; font-weight: 600; color: var(--primary); margin-bottom: 24px;">个人健康信息</h3>
+                        <div style="display: grid; gap: 16px;">
+                            <div style="display: flex; justify-content: space-between; padding: 12px 16px; background: var(--bg-secondary); border-radius: 8px;">
+                                <span style="color: var(--text-secondary);">BMI指数</span>
+                                <span style="font-weight: 600; color: var(--primary);" id="bmiDisplay">--</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 12px 16px; background: var(--bg-secondary); border-radius: 8px;">
+                                <span style="color: var(--text-secondary);">体质类型</span>
+                                <span style="font-weight: 600; color: var(--primary);">平和质</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 12px 16px; background: var(--bg-secondary); border-radius: 8px;">
+                                <span style="color: var(--text-secondary);">健康目标</span>
+                                <span style="font-weight: 600; color: var(--primary);" id="goalDisplay">慢性病管理</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 12px 16px; background: var(--bg-secondary); border-radius: 8px;">
+                                <span style="color: var(--text-secondary);">偏好菜系</span>
+                                <span style="font-weight: 600; color: var(--primary);" id="cuisineDisplay">川菜（健康改良版）</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 体质分析 -->
+                    <div class="glass-card">
+                        <h3 style="font-size: 20px; font-weight: 600; color: var(--primary); margin-bottom: 24px;">中医体质分析</h3>
+                        <div style="height: 280px;">
+                            <canvas id="constitutionChart"></canvas>
+                        </div>
+                        <p id="constitutionText" style="margin-top: 20px; color: var(--text-secondary);">平和体质为主，整体健康状态良好</p>
+                    </div>
+                </div>
+                
+                <!-- 营养素分析 -->
+                <div class="glass-card">
+                    <h3 class="card-title">💊 每日营养素需求分析</h3>
+                    <div class="nutrition-grid" id="nutritionGrid"></div>
+                </div>
+                
+                <!-- 七日膳食计划 -->
+                <div class="glass-card">
+                    <h3 class="card-title">🍱 七日膳食计划（川菜健康改良版）</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 15px;">采用川菜健康改良工艺，减盐30%、减油20%，保留91%风味</p>
+                    <div style="overflow-x: auto;">
+                        <table class="meal-table">
+                            <thead>
+                                <tr>
+                                    <th>日期</th>
+                                    <th>早餐</th>
+                                    <th>午餐</th>
+                                    <th>晚餐</th>
+                                    <th>热量</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mealPlanBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- 食材推荐 -->
+                <div class="glass-card">
+                    <h3 class="card-title">🥦 食材推荐与禁忌</h3>
+                    <div style="margin-bottom: 16px;">
+                        <h4 style="color: var(--success); margin-bottom: 12px; font-size: 16px; font-weight: 600;">✅ 推荐食材</h4>
+                        <div id="recommendedIngredients"></div>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--danger); margin-bottom: 12px; font-size: 16px; font-weight: 600;">❌ 避免食材</h4>
+                        <div id="avoidedIngredients"></div>
+                    </div>
+                </div>
+                
+                <!-- 健康趋势追踪 -->
+                <div class="glass-card">
+                    <h3 class="card-title">📈 30天健康趋势预测</h3>
+                    <div style="height: 320px;">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- 营养素密度分析 -->
+                <div class="glass-card">
+                    <h3 class="card-title">🔍 营养素密度分析</h3>
+                    <div style="height: 320px;">
+                        <canvas id="nutritionChart"></canvas>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 32px;">
+                    <button class="btn btn-secondary" onclick="resetAssessment()">重新评估</button>
+                    <button class="btn btn-primary" onclick="window.print()">打印报告</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- AI对话入口 -->
+    <div class="ai-chat-box">
+        <div class="chat-trigger" onclick="alert('AI智能对话功能即将上线！\n\n您可以咨询：\n• 膳食营养问题\n• 健康饮食建议\n• 川菜健康改良方案\n• 慢性病饮食指导')">
+            <svg viewBox="0 0 24 24">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+            </svg>
+        </div>
+    </div>
+    
+    <script>
+        // 全局数据
+        let userData = {
+            basic: {},
+            constitution: {},
+            preferences: {},
+            diseases: []
+        };
+        
+        // 体质问卷数据
+        const constitutionQuestions = [
+            { id: 1, question: "您容易疲劳吗？", options: ["从不", "偶尔", "经常", "总是"] },
+            { id: 2, question: "您怕冷吗？", options: ["不怕", "稍微怕冷", "比较怕冷", "非常怕冷"] },
+            { id: 3, question: "您容易出汗吗？", options: ["不易出汗", "稍微易汗", "比较易汗", "非常易汗"] },
+            { id: 4, question: "您容易上火吗？", options: ["从不上火", "偶尔上火", "经常上火", "总是上火"] },
+            { id: 5, question: "您容易口干吗？", options: ["从不", "偶尔", "经常", "总是"] }
+        ];
+        
+        // 页面导航
+        function goToPage(pageId) {
+            document.querySelectorAll('main > div').forEach(div => div.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
+            window.scrollTo(0, 0);
+            
+            // 进入体质页面时，确保问卷已加载
+            if (pageId === 'constitutionPage') {
+                loadConstitutionQuestions();
+            }
+        }
+        
+        // 开始评估
+        function startAssessment() {
+            goToPage('basicInfoPage');
+        }
+        
+        // 去体质页
+        function goToConstitution() {
+            goToPage('constitutionPage');
+        }
+        
+        // 选择选项
+        function selectOption(btn, category) {
+            const group = btn.parentElement;
+            group.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            userData[category] = btn.dataset.value;
+
+            // 特殊处理菜系，确保保存到userData.cuisine
+            if (category === 'cuisine') {
+                userData.cuisine = btn.dataset.value;
+            }
+        }
+        
+        // 切换多选
+        function toggleOption(btn, category) {
+            const value = btn.dataset.value;
+            const group = btn.parentElement;
+
+            if (value === 'none') {
+                // 选择"无"时，清除其他所有选择
+                group.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // 清除对应的数据
+                if (category === 'disease') {
+                    userData.diseases = [];
+                }
+            } else {
+                // 选择其他选项时，移除"无"的选中状态
+                const noneBtn = group.querySelector('[data-value="none"]');
+                if (noneBtn) {
+                    noneBtn.classList.remove('active');
+                }
+
+                // 切换当前选项
+                btn.classList.toggle('active');
+
+                // 更新数据
+                if (category === 'disease') {
+                    if (!userData.diseases) userData.diseases = [];
+                    if (btn.classList.contains('active')) {
+                        userData.diseases.push(value);
+                    } else {
+                        userData.diseases = userData.diseases.filter(d => d !== value);
+                    }
+                }
+            }
+        }
+        
+        // 加载体质问卷
+        function loadConstitutionQuestions() {
+            const container = document.getElementById('constitutionQuestions');
+            container.innerHTML = constitutionQuestions.map((q, index) => `
+                <div class="constitution-question">
+                    <h4>${index + 1}. ${q.question}</h4>
+                    <div class="constitution-options">
+                        ${q.options.map((opt, i) => `
+                            <span class="constitution-option" data-question="${q.id}" data-value="${i}" onclick="selectConstitution(this)">
+                                ${opt}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 选择体质选项
+        function selectConstitution(el) {
+            const questionId = el.dataset.question;
+            const options = document.querySelectorAll(`[data-question="${questionId}"]`);
+            options.forEach(opt => opt.classList.remove('active'));
+            el.classList.add('active');
+            userData.constitution[questionId] = parseInt(el.dataset.value);
+        }
+        
+        // 生成体质分析
+        function generateConstitution() {
+            const selected = Object.keys(userData.constitution).length;
+            if (selected < constitutionQuestions.length) {
+                alert('请完成所有体质问卷问题！');
+                return;
+            }
+            goToPage('preferencePage');
+        }
+        
+        // 生成报告
+        function generateReport() {
+            userData.basic = {
+                gender: document.getElementById('gender').value,
+                age: parseInt(document.getElementById('age').value),
+                height: parseInt(document.getElementById('height').value),
+                weight: parseInt(document.getElementById('weight').value),
+                bmi: (parseInt(document.getElementById('weight').value) / Math.pow(parseInt(document.getElementById('height').value) / 100, 2)).toFixed(1)
+            };
+
+            // 更新BMI显示
+            document.getElementById('bmiDisplay').textContent = userData.basic.bmi;
+
+            // 获取健康目标
+            const goalTexts = {
+                'maintain': '保持健康',
+                'weightloss': '减脂瘦身',
+                'musclegain': '增肌塑形',
+                'disease': '慢性病管理'
+            };
+            if (userData.goal) {
+                document.getElementById('goalDisplay').textContent = goalTexts[userData.goal] || userData.goal;
+            }
+
+            // 获取菜系偏好
+            const cuisineTexts = {
+                'sichuan': '川菜（健康改良版）',
+                'guangdong': '粤菜',
+                'shandong': '鲁菜',
+                'western': '西餐'
+            };
+            if (userData.cuisine) {
+                document.getElementById('cuisineDisplay').textContent = cuisineTexts[userData.cuisine] || userData.cuisine;
+            } else {
+                document.getElementById('cuisineDisplay').textContent = '川菜（健康改良版）';
+            }
+
+            goToPage('reportPage');
+
+            // 生成图表
+            setTimeout(() => {
+                generateScoreChart();
+                generateConstitutionChart();
+                generateTrendChart();
+                generateNutritionChart();
+                generateNutritionGrid();
+                generateMealPlan();
+                generateIngredients();
+            }, 100);
+        }
+        
+        // 健康评分图表
+        function generateScoreChart() {
+            const ctx = document.getElementById('scoreChart').getContext('2d');
+            const score = 85;
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [score, 100 - score],
+                        backgroundColor: ['#007AFF', '#E5E5EA'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    cutout: '75%',
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+        
+        // 体质雷达图
+        function generateConstitutionChart() {
+            const ctx = document.getElementById('constitutionChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['平和质', '气虚质', '阳虚质', '阴虚质', '痰湿质', '湿热质', '血瘀质', '气郁质'],
+                    datasets: [{
+                        label: '体质特征',
+                        data: [80, 30, 25, 35, 20, 25, 15, 20],
+                        backgroundColor: 'rgba(0, 122, 255, 0.2)',
+                        borderColor: '#007AFF',
+                        pointBackgroundColor: '#007AFF'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 趋势折线图
+        function generateTrendChart() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            const labels = [];
+            const scores = [];
+            
+            for (let i = 1; i <= 30; i++) {
+                labels.push(`第${i}天`);
+                scores.push(75 + Math.random() * 15);
+            }
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '健康指数',
+                        data: scores,
+                        borderColor: '#007AFF',
+                        backgroundColor: 'rgba(0, 122, 255, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 60,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 营养素柱状图
+        function generateNutritionChart() {
+            const ctx = document.getElementById('nutritionChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['蛋白质', '碳水化合物', '脂肪', '膳食纤维', '维生素', '矿物质', '钙', '铁', '锌', '硒', '维生素C', '维生素E'],
+                    datasets: [{
+                        label: '营养素密度 (%)',
+                        data: [85, 90, 70, 75, 80, 78, 82, 70, 65, 72, 88, 76],
+                        backgroundColor: [
+                            '#007AFF', '#5AC8FA', '#34C759', '#FF9500', 
+                            '#FF3B30', '#5856D6', '#AF52DE', '#007AFF',
+                            '#34C759', '#FF9500', '#FF3B30', '#5AC8FA'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 营养素网格
+        function generateNutritionGrid() {
+            const nutritionData = [
+                { label: '蛋白质', value: '65g' },
+                { label: '碳水化合物', value: '250g' },
+                { label: '脂肪', value: '55g' },
+                { label: '膳食纤维', value: '30g' },
+                { label: '维生素A', value: '800μg' },
+                { label: '维生素C', value: '100mg' },
+                { label: '钙', value: '800mg' },
+                { label: '铁', value: '15mg' }
+            ];
+            
+            document.getElementById('nutritionGrid').innerHTML = nutritionData.map(n => `
+                <div class="nutrition-item">
+                    <div class="value">${n.value}</div>
+                    <div class="label">${n.label}</div>
+                </div>
+            `).join('');
+        }
+        
+        // 七日膳食计划
+        function generateMealPlan() {
+            const meals = [
+                { breakfast: '杂粮粥+水煮蛋+凉拌黄瓜', lunch: '清蒸鱼+白灼菜心+糙米饭', dinner: '豆腐汤+清炒时蔬', calories: '1800' },
+                { breakfast: '全麦面包+豆浆+苹果', lunch: '宫保鸡丁（少油版）+炒青菜+杂粮饭', dinner: '紫菜蛋花汤+凉拌木耳', calories: '1850' },
+                { breakfast: '燕麦粥+鸡蛋+橙子', lunch: '糖醋里脊（少糖版）+蒜蓉西兰花+红薯饭', dinner: '冬瓜汤+清炒菠菜', calories: '1900' },
+                { breakfast: '玉米+牛奶+香蕉', lunch: '红烧牛肉（低盐版）+炒豆芽+白米饭', dinner: '番茄蛋汤+凉拌海带', calories: '1950' },
+                { breakfast: '紫薯+酸奶+草莓', lunch: '鱼香肉丝（少油版）+炒四季豆+糙米饭', dinner: '豆腐鱼头汤+清炒白菜', calories: '1800' },
+                { breakfast: '荞麦面+鸡蛋+猕猴桃', lunch: '白切鸡+凉拌三丝+红薯饭', dinner: '冬瓜排骨汤（少盐）+炒菜心', calories: '1920' },
+                { breakfast: '小米粥+鹌鹑蛋+梨', lunch: '水煮肉片（少油版）+炒芹菜+白米饭', dinner: '银耳莲子汤+凉拌黄瓜', calories: '1880' }
+            ];
+
+            const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+
+            document.getElementById('mealPlanBody').innerHTML = meals.map((meal, i) => `
+                <tr>
+                    <td><strong>${days[i]}</strong></td>
+                    <td>${meal.breakfast}</td>
+                    <td>${meal.lunch}</td>
+                    <td>${meal.dinner}</td>
+                    <td style="color: var(--primary); font-weight: 500;">${meal.calories} kcal</td>
+                </tr>
+            `).join('');
+        }
+        
+        // 食材推荐
+        function generateIngredients() {
+            const recommended = ['糙米', '燕麦', '红薯', '豆腐', '鱼类', '鸡胸肉', '西兰花', '菠菜', '黄瓜', '番茄', '木耳', '海带', '苹果', '橙子'];
+            const avoided = ['肥肉', '动物内脏', '油炸食品', '腌制食品', '高糖饮料', '辛辣调料'];
+            
+            document.getElementById('recommendedIngredients').innerHTML = recommended.map(i => 
+                `<span class="ingredient-tag recommended">${i}</span>`
+            ).join('');
+            
+            document.getElementById('avoidedIngredients').innerHTML = avoided.map(i => 
+                `<span class="ingredient-tag avoid">${i}</span>`
+            ).join('');
+        }
+        
+        // 重置评估
+        function resetAssessment() {
+            userData = {
+                basic: {},
+                constitution: {},
+                preferences: {},
+                diseases: []
+            };
+            goToPage('welcomePage');
+        }
+        
+        // 主题切换
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+        
+        // 加载保存的主题
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('themeIcon').textContent = '☀️';
+        }
+    </script>
+</body>
+</html>

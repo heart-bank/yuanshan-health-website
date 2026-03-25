@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户注册 - 元膳健康</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-input:disabled {
+            background-color: #f3f4f6;
+            cursor: not-allowed;
+        }
+
+        .verify-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .verify-btn {
+            white-space: nowrap;
+            padding: 14px 24px;
+            background: #f3f4f6;
+            color: #6b7280;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 140px;
+        }
+
+        .verify-btn:hover:not(:disabled) {
+            background: #e5e7eb;
+        }
+
+        .verify-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
+        }
+
+        .register-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .checkbox-group label a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .password-strength {
+            margin-top: 0.5rem;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .strength-text {
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-leaf"></i>
+            </div>
+            <h1 class="title">创建账号</h1>
+            <p class="subtitle">加入元膳健康,开启智能膳食之旅</p>
+        </div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label class="form-label">手机号 <span style="color: #ef4444;">*</span></label>
+                <input type="tel" class="form-input" id="phone" placeholder="请输入11位手机号" maxlength="11" required>
+                <div class="error-message" id="phoneError">请输入正确的手机号</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">验证码 <span style="color: #ef4444;">*</span></label>
+                <div class="verify-group">
+                    <input type="text" class="form-input" id="verifyCode" placeholder="请输入验证码" maxlength="6" required>
+                    <button type="button" class="verify-btn" id="sendCodeBtn">获取验证码</button>
+                </div>
+                <div class="error-message" id="codeError">验证码错误</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">设置密码 <span style="color: #ef4444;">*</span></label>
+                <input type="password" class="form-input" id="password" placeholder="6-20位,包含字母和数字" required>
+                <div class="password-strength">
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strengthFill"></div>
+                    </div>
+                    <div class="strength-text" id="strengthText">密码强度: 未输入</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">确认密码 <span style="color: #ef4444;">*</span></label>
+                <input type="password" class="form-input" id="confirmPassword" placeholder="请再次输入密码" required>
+                <div class="error-message" id="passwordError">两次密码不一致</div>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="agreeTerms" required>
+                <label>
+                    我已阅读并同意 <a href="用户协议.html" target="_blank">用户协议</a> 和 <a href="隐私政策.html" target="_blank">隐私政策</a>
+                </label>
+            </div>
+
+            <button type="submit" class="register-btn" id="registerBtn">立即注册</button>
+        </form>
+
+        <div class="footer">
+            已有账号? <a href="javascript:void(0)" onclick="window.close()">立即登录</a>
+        </div>
+    </div>
+
+    <script>
+        // 手机号验证
+        const phoneInput = document.getElementById('phone');
+        const phoneError = document.getElementById('phoneError');
+
+        phoneInput.addEventListener('input', function() {
+            const value = this.value.replace(/\D/g, '');
+            this.value = value;
+            
+            if (value.length === 11 && /^1[3-9]\d{9}$/.test(value)) {
+                phoneError.classList.remove('show');
+            }
+        });
+
+        phoneInput.addEventListener('blur', function() {
+            if (this.value && !/^1[3-9]\d{9}$/.test(this.value)) {
+                phoneError.classList.add('show');
+            }
+        });
+
+        // 发送验证码
+        const sendCodeBtn = document.getElementById('sendCodeBtn');
+        let countdown = 0;
+
+        sendCodeBtn.addEventListener('click', function() {
+            const phone = phoneInput.value;
+            
+            if (!/^1[3-9]\d{9}$/.test(phone)) {
+                phoneError.classList.add('show');
+                phoneInput.focus();
+                return;
+            }
+
+            // 模拟发送验证码
+            sendCodeBtn.disabled = true;
+            sendCodeBtn.textContent = '发送中...';
+
+            setTimeout(() => {
+                countdown = 60;
+                sendCodeBtn.textContent = `${countdown}秒后重试`;
+                
+                const timer = setInterval(() => {
+                    countdown--;
+                    if (countdown <= 0) {
+                        clearInterval(timer);
+                        sendCodeBtn.disabled = false;
+                        sendCodeBtn.textContent = '获取验证码';
+                    } else {
+                        sendCodeBtn.textContent = `${countdown}秒后重试`;
+                    }
+                }, 1000);
+
+                // 模拟收到验证码 (实际项目中需要后端发送)
+                alert(`模拟验证码已发送: 123456\n(实际项目会发送到手机 ${phone})`);
+            }, 1000);
+        });
+
+        // 密码强度检测
+        const passwordInput = document.getElementById('password');
+        const strengthFill = document.getElementById('strengthFill');
+        const strengthText = document.getElementById('strengthText');
+
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            
+            if (password.length >= 6) strength++;
+            if (password.length >= 10) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+
+            let strengthLevel, color;
+            
+            if (strength <= 2) {
+                strengthLevel = '弱';
+                color = '#ef4444';
+                strengthFill.style.width = '33%';
+            } else if (strength <= 4) {
+                strengthLevel = '中';
+                color = '#f59e0b';
+                strengthFill.style.width = '66%';
+            } else {
+                strengthLevel = '强';
+                color = '#10b981';
+                strengthFill.style.width = '100%';
+            }
+
+            strengthFill.style.background = color;
+            strengthText.textContent = password ? `密码强度: ${strengthLevel}` : '密码强度: 未输入';
+            strengthText.style.color = password ? color : '#6b7280';
+        });
+
+        // 密码确认验证
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const passwordError = document.getElementById('passwordError');
+
+        confirmPasswordInput.addEventListener('blur', function() {
+            if (this.value && this.value !== passwordInput.value) {
+                passwordError.classList.add('show');
+            } else {
+                passwordError.classList.remove('show');
+            }
+        });
+
+        // 注册表单提交
+        const registerForm = document.getElementById('registerForm');
+        const registerBtn = document.getElementById('registerBtn');
+        const verifyCodeInput = document.getElementById('verifyCode');
+        const codeError = document.getElementById('codeError');
+
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // 验证手机号
+            if (!/^1[3-9]\d{9}$/.test(phoneInput.value)) {
+                phoneError.classList.add('show');
+                phoneInput.focus();
+                return;
+            }
+
+            // 验证验证码 (模拟验证123456)
+            if (verifyCodeInput.value !== '123456') {
+                codeError.classList.add('show');
+                verifyCodeInput.focus();
+                return;
+            }
+
+            // 验证密码
+            if (passwordInput.value.length < 6) {
+                alert('密码长度至少6位');
+                passwordInput.focus();
+                return;
+            }
+
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                passwordError.classList.add('show');
+                confirmPasswordInput.focus();
+                return;
+            }
+
+            // 模拟注册
+            registerBtn.disabled = true;
+            registerBtn.textContent = '注册中...';
+
+            setTimeout(() => {
+                // 保存用户数据到LocalStorage
+                const userData = {
+                    id: Date.now(),
+                    phone: phoneInput.value,
+                    password: passwordInput.value,
+                    createdAt: new Date().toISOString()
+                };
+
+                let users = JSON.parse(localStorage.getItem('yuanshan_registered_users') || '[]');
+                
+                // 检查手机号是否已注册
+                if (users.find(u => u.phone === userData.phone)) {
+                    alert('该手机号已注册,请直接登录');
+                    registerBtn.disabled = false;
+                    registerBtn.textContent = '立即注册';
+                    return;
+                }
+
+                users.push(userData);
+                localStorage.setItem('yuanshan_registered_users', JSON.stringify(users));
+
+                alert('注册成功!\n您可以使用手机号和密码登录');
+                window.close();
+            }, 1500);
+        });
+
+        // 输入时清除错误提示
+        verifyCodeInput.addEventListener('input', function() {
+            codeError.classList.remove('show');
+        });
+    </script>
+</body>
+</html>

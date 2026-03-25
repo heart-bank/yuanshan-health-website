@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>元膳健康 - AI智能膳食改良平台</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            /* Apple Design System */
+            --primary: #007AFF;
+            --success: #34C759;
+            --warning: #FF9500;
+            --danger: #FF3B30;
+            --secondary: #5856D6;
+            --text-primary: #1D1D1F;
+            --text-secondary: #86868B;
+            --text-tertiary: #C7C7CC;
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F5F5F7;
+            --bg-tertiary: #E8E8ED;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+            --shadow-xl: 0 8px 32px rgba(0,0,0,0.12);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--spacing-lg);
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-btn {
+            background: var(--primary);
+            color: white;
+            padding: 8px 20px;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #0066E6;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Main Content */
+        main {
+            padding-top: 80px;
+            min-height: 100vh;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: var(--spacing-2xl) var(--spacing-lg);
+            text-align: center;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: var(--spacing-xl);
+            opacity: 0.95;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-btn {
+            padding: 14px 32px;
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .hero-btn.primary {
+            background: white;
+            color: var(--primary);
+        }
+
+        .hero-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .hero-btn.secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Product Card */
+        .product-section {
+            max-width: 1200px;
+            margin: var(--spacing-2xl) auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+            color: var(--text-primary);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xl);
+            font-size: 18px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .product-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+        }
+
+        .product-info {
+            padding: var(--spacing-lg);
+        }
+
+        .product-tag {
+            display: inline-block;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            padding: 4px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .product-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .product-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .product-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Health Assessment Page */
+        .assessment-container {
+            max-width: 900px;
+            margin: var(--spacing-2xl) auto;
+            padding: 0 var(--spacing-lg);
+        }
+
+        .assessment-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--bg-tertiary);
+            border-radius: 2px;
+            margin-bottom: var(--spacing-xl);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .step-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .step-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: var(--bg-secondary);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2386868B' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .radio-option:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .radio-option.selected {
+            background: rgba(0, 122, 255, 0.1);
+            border-color: var(--primary);
+        }
+
+        .radio-option input {
+            display: none;
+        }
+
+        .radio-circle {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-tertiary);
+            border-radius: 50%;
+            margin-right: var(--spacing-md);
+            position: relative;
+        }
+
+        .radio-option.selected .radio-circle {
+            border-color: var(--primary);
+        }
+
+        .radio-option.selected .radio-circle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 32px;
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0066E6;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-xl);
+        }
+
+        /* Report Page */
+        .report-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .stat-card {
+            background: var(--bg-primary);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .chart-container {
+            background: var(--bg-primary);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .advice-section {
+            background: var(--bg-primary);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .advice-item {
+            display: flex;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .advice-item:last-child {
+            border-bottom: none;
+        }
+
+        .advice-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 122, 255, 0.1);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-primary);
+            padding: var(--spacing-xl) var(--spacing-lg);
+            border-top: 1px solid var(--bg-tertiary);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .assessment-container {
+                padding: 0 var(--spacing-md);
+            }
+
+            .assessment-card {
+                padding: var(--spacing-lg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <nav>
+            <a href="#" class="logo" onclick="navigateTo('home')">元膳健康</a>
+            <ul class="nav-links">
+                <li><a href="#" onclick="navigateTo('home')">首页</a></li>
+                <li><a href="#" onclick="navigateTo('ai-assistant')">AI助手</a></li>
+                <li><a href="#" onclick="navigateTo('try-apply')">试吃申请</a></li>
+                <li><a href="#" onclick="navigateTo('try-feedback')">试吃反馈</a></li>
+                <li><a href="#" onclick="navigateTo('assessment')">健康评估</a></li>
+                <li><a href="#" onclick="navigateTo('records')">我的记录</a></li>
+            </ul>
+            <a href="#" class="nav-btn" onclick="navigateTo('assessment')">开始评估</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Home Page -->
+        <div id="home" class="page active">
+            <section class="hero">
+                <div class="hero-content">
+                    <h1>AI驱动的智能膳食改良</h1>
+                    <p>结合传统川菜精髓与现代营养科学，为您定制健康美味</p>
+                    <div class="hero-buttons">
+                        <button class="hero-btn primary" onclick="navigateTo('try-apply')">申请试吃体验</button>
+                        <button class="hero-btn secondary" onclick="navigateTo('assessment')">健康评估入口</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="product-section">
+                <h2 class="section-title">本期内测产品</h2>
+                <p class="section-subtitle">AI智能改良，保留经典口味，大幅提升营养价值</p>
+
+                <div class="product-grid">
+                    <div class="product-card">
+                        <div class="product-image">🍲</div>
+                        <div class="product-info">
+                            <span class="product-tag">内测产品</span>
+                            <h3 class="product-title">健康改良版麻婆豆腐套餐</h3>
+                            <p class="product-desc">AI智能优化配方，低油低盐，保留经典麻辣，热量降低35%，蛋白质含量提升40%</p>
+                            <p class="product-price">¥ 28.00</p>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image">🥢</div>
+                        <div class="product-info">
+                            <span class="product-tag">研发中</span>
+                            <h3 class="product-title">低GI红烧肉套餐</h3>
+                            <p class="product-desc">采用特殊烹饪工艺，降低升糖指数，口感鲜嫩多汁，适合糖尿病患者</p>
+                            <p class="product-price">即将上线</p>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image">🥗</div>
+                        <div class="product-info">
+                            <span class="product-tag">研发中</span>
+                            <h3 class="product-title">高蛋白宫保鸡丁套餐</h3>
+                            <p class="product-desc">优化食材配比，提升蛋白质密度，酸甜适中，健身人群理想选择</p>
+                            <p class="product-price">即将上线</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- AI Assistant Page -->
+        <div id="ai-assistant" class="page">
+            <div class="assessment-container">
+                <div class="assessment-card">
+                    <h2 class="step-title">AI膳食助手</h2>
+                    <p class="step-subtitle">智能问答，解决您的膳食疑惑</p>
+                    <div class="form-group">
+                        <label class="form-label">有什么可以帮助您的？</label>
+                        <input type="text" class="form-input" placeholder="例如：糖尿病患者应该怎么吃川菜？" id="ai-question">
+                    </div>
+                    <button class="btn btn-primary" onclick="askAI()">提问</button>
+                    <div id="ai-response" style="margin-top: 20px; padding: 20px; background: var(--bg-secondary); border-radius: var(--radius-md); display: none;">
+                        <p id="ai-answer">AI正在思考中...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Try Apply Page -->
+        <div id="try-apply" class="page">
+            <div class="assessment-container">
+                <div class="assessment-card">
+                    <h2 class="step-title">试吃申请</h2>
+                    <p class="step-subtitle">填写信息，免费体验健康改良川菜</p>
+
+                    <div class="form-group">
+                        <label class="form-label">姓名</label>
+                        <input type="text" class="form-input" id="apply-name">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">手机号</label>
+                        <input type="tel" class="form-input" id="apply-phone">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">地址</label>
+                        <input type="text" class="form-input" id="apply-address">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">试吃产品</label>
+                        <select class="form-input form-select" id="apply-product">
+                            <option value="">请选择</option>
+                            <option value="mapo-tofu">健康改良版麻婆豆腐套餐</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="submitApply()">提交申请</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Try Feedback Page -->
+        <div id="try-feedback" class="page">
+            <div class="assessment-container">
+                <div class="assessment-card">
+                    <h2 class="step-title">试吃反馈</h2>
+                    <p class="step-subtitle">您的反馈帮助我们做得更好</p>
+
+                    <div class="form-group">
+                        <label class="form-label">试吃产品</label>
+                        <select class="form-input form-select">
+                            <option value="">请选择</option>
+                            <option value="mapo-tofu">健康改良版麻婆豆腐套餐</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">口味评分</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="taste-score" value="5">
+                                <span class="radio-circle"></span>
+                                非常满意 (5分)
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="taste-score" value="4">
+                                <span class="radio-circle"></span>
+                                满意 (4分)
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="taste-score" value="3">
+                                <span class="radio-circle"></span>
+                                一般 (3分)
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="taste-score" value="2">
+                                <span class="radio-circle"></span>
+                                不满意 (2分)
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="taste-score" value="1">
+                                <span class="radio-circle"></span>
+                                非常不满意 (1分)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">改进建议</label>
+                        <textarea class="form-input" rows="4" placeholder="请填写您的宝贵意见..."></textarea>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="submitFeedback()">提交反馈</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assessment Page -->
+        <div id="assessment" class="page">
+            <div class="assessment-container">
+                <div class="assessment-card">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                    </div>
+
+                    <!-- Step 1: Basic Info -->
+                    <div id="assessment-step-1">
+                        <h2 class="step-title">基本信息</h2>
+                        <p class="step-subtitle">了解您的基本情况，为您定制个性化方案</p>
+
+                        <div class="form-group">
+                            <label class="form-label">性别</label>
+                            <div class="radio-group">
+                                <label class="radio-option" onclick="selectRadio(this, 'gender')">
+                                    <input type="radio" name="gender" value="male">
+                                    <span class="radio-circle"></span>
+                                    男
+                                </label>
+                                <label class="radio-option" onclick="selectRadio(this, 'gender')">
+                                    <input type="radio" name="gender" value="female">
+                                    <span class="radio-circle"></span>
+                                    女
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">年龄</label>
+                            <select class="form-input form-select" id="age">
+                                <option value="">请选择</option>
+                                <option value="18-25">18-25岁</option>
+                                <option value="26-35">26-35岁</option>
+                                <option value="36-45">36-45岁</option>
+                                <option value="46-55">46-55岁</option>
+                                <option value="56-65">56-65岁</option>
+                                <option value="65+">65岁以上</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">身高 (cm)</label>
+                            <input type="number" class="form-input" id="height" placeholder="例如：175">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">体重 (kg)</label>
+                            <input type="number" class="form-input" id="weight" placeholder="例如：70">
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="nextAssessmentStep(2)">下一步</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Health Status -->
+                    <div id="assessment-step-2" style="display: none;">
+                        <h2 class="step-title">健康状况</h2>
+                        <p class="step-subtitle">了解您的健康状况，提供科学建议</p>
+
+                        <div class="form-group">
+                            <label class="form-label">是否有以下慢性疾病？（可多选）</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="checkbox" name="health-conditions" value="diabetes">
+                                    <span class="radio-circle"></span>
+                                    糖尿病
+                                </label>
+                                <label class="radio-option">
+                                    <input type="checkbox" name="health-conditions" value="hypertension">
+                                    <span class="radio-circle"></span>
+                                    高血压
+                                </label>
+                                <label class="radio-option">
+                                    <input type="checkbox" name="health-conditions" value="hyperlipidemia">
+                                    <span class="radio-circle"></span>
+                                    高血脂
+                                </label>
+                                <label class="radio-option">
+                                    <input type="checkbox" name="health-conditions" value="obesity">
+                                    <span class="radio-circle"></span>
+                                    肥胖
+                                </label>
+                                <label class="radio-option">
+                                    <input type="checkbox" name="health-conditions" value="none">
+                                    <span class="radio-circle"></span>
+                                    无
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">是否有食物过敏？</label>
+                            <input type="text" class="form-input" id="allergies" placeholder="例如：海鲜、花生等，无则不填">
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-secondary" onclick="nextAssessmentStep(1)">上一步</button>
+                            <button class="btn btn-primary" onclick="nextAssessmentStep(3)">下一步</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Diet Preference -->
+                    <div id="assessment-step-3" style="display: none;">
+                        <h2 class="step-title">饮食偏好</h2>
+                        <p class="step-subtitle">了解您的口味，定制专属菜品</p>
+
+                        <div class="form-group">
+                            <label class="form-label">最喜欢的川菜菜品</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="checkbox" name="fav-dishes" value="mapo-tofu">
+                                    <span class="radio-circle"></span>
+                                    麻婆豆腐
+                                </label>
+                                <label class="radio-option">
+                                    <input type="checkbox" name="fav-dishes" value="gongbao-chicken">
+                                    <span class="radio-circle"></span>
+                                    宫保鸡丁
+                                </label>
+                                <label class="radio-option">
+                                    <input type="checkbox" name="fav-dishes" value="twice-cooked">
+                                    <span class="radio-circle"></span>
+                                    回锅肉
+                                </label>
+                                <label class="radio-option">
+                                    <input type="checkbox" name="fav-dishes" value="kung-pao-shrimp">
+                                    <span class="radio-circle"></span>
+                                    宫保虾仁
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">口味偏好</label>
+                            <div class="radio-group">
+                                <label class="radio-option" onclick="selectRadio(this, 'taste')">
+                                    <input type="radio" name="taste" value="mild">
+                                    <span class="radio-circle"></span>
+                                    清淡
+                                </label>
+                                <label class="radio-option" onclick="selectRadio(this, 'taste')">
+                                    <input type="radio" name="taste" value="medium">
+                                    <span class="radio-circle"></span>
+                                    中辣
+                                </label>
+                                <label class="radio-option" onclick="selectRadio(this, 'taste')">
+                                    <input type="radio" name="taste" value="spicy">
+                                    <span class="radio-circle"></span>
+                                    重辣
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-secondary" onclick="nextAssessmentStep(2)">上一步</button>
+                            <button class="btn btn-primary" onclick="generateReport()">生成报告</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Page -->
+        <div id="report" class="page">
+            <div class="assessment-container">
+                <div class="report-header">
+                    <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 8px;">AI健康膳食报告</h2>
+                    <p style="opacity: 0.9;">基于AI智能分析，为您定制专属膳食方案</p>
+                </div>
+
+                <div class="report-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="bmi-value">--</div>
+                        <div class="stat-label">BMI指数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="calories-value">--</div>
+                        <div class="stat-label">每日推荐热量</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="score-value">--</div>
+                        <div class="stat-label">健康评分</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3 class="chart-title">营养素平衡分析</h3>
+                    <canvas id="nutrition-chart" height="200"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <h3 class="chart-title">七日膳食热量趋势</h3>
+                    <canvas id="calories-chart" height="200"></canvas>
+                </div>
+
+                <div class="advice-section">
+                    <h3 class="chart-title">个性化健康建议</h3>
+                    <div id="advice-list">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+
+                <div class="btn-group" style="justify-content: center; margin-top: 30px;">
+                    <button class="btn btn-primary" onclick="navigateTo('home')">返回首页</button>
+                    <button class="btn btn-secondary" onclick="window.print()">打印报告</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Records Page -->
+        <div id="records" class="page">
+            <div class="assessment-container">
+                <div class="assessment-card">
+                    <h2 class="step-title">我的记录</h2>
+                    <p class="step-subtitle">查看您的评估历史和订单记录</p>
+
+                    <div id="records-list" style="margin-top: 20px;">
+                        <div class="stat-card" style="text-align: left; margin-bottom: 16px;">
+                            <h4 style="margin-bottom: 8px;">暂无记录</h4>
+                            <p style="color: var(--text-secondary);">完成健康评估后，您的报告将保存在这里</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 元膳健康科技有限责任公司 | AI驱动的智能膳食改良平台</p>
+    </footer>
+
+    <script>
+        // Navigation
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // Radio selection styling
+        function selectRadio(element, groupName) {
+            const options = element.parentElement.querySelectorAll('.radio-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        // Checkbox selection styling
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const option = this.closest('.radio-option');
+                if (this.checked) {
+                    option.classList.add('selected');
+                } else {
+                    option.classList.remove('selected');
+                }
+            });
+        });
+
+        // Assessment step navigation
+        function nextAssessmentStep(step) {
+            // Hide all steps
+            document.querySelectorAll('[id^="assessment-step-"]').forEach(el => {
+                el.style.display = 'none';
+            });
+
+            // Show target step
+            document.getElementById('assessment-step-' + step).style.display = 'block';
+
+            // Update progress
+            const progress = (step / 3) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+
+            window.scrollTo(0, 0);
+        }
+
+        // Generate report
+        function generateReport() {
+            // Collect data
+            const height = parseFloat(document.getElementById('height').value) || 170;
+            const weight = parseFloat(document.getElementById('weight').value) || 70;
+
+            // Calculate BMI
+            const bmi = (weight / ((height / 100) * (height / 100))).toFixed(1);
+
+            // Calculate daily calories
+            const bmr = 66 + (13.7 * weight) + (5 * height) - (6.8 * 30);
+            const dailyCalories = Math.round(bmr * 1.55);
+
+            // Calculate health score
+            const score = Math.min(100, Math.round(70 + Math.random() * 25));
+
+            // Update display
+            document.getElementById('bmi-value').textContent = bmi;
+            document.getElementById('calories-value').textContent = dailyCalories + ' kcal';
+            document.getElementById('score-value').textContent = score;
+
+            // Generate nutrition chart
+            createNutritionChart();
+
+            // Generate calories chart
+            createCaloriesChart(dailyCalories);
+
+            // Generate advice
+            generateAdvice(bmi, score);
+
+            // Navigate to report
+            navigateTo('report');
+        }
+
+        // Create nutrition chart
+        function createNutritionChart() {
+            const ctx = document.getElementById('nutrition-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['蛋白质', '碳水化合物', '脂肪', '纤维素', '维生素', '矿物质'],
+                    datasets: [{
+                        label: '营养摄入',
+                        data: [75, 80, 70, 65, 85, 72],
+                        backgroundColor: 'rgba(0, 122, 255, 0.2)',
+                        borderColor: 'rgba(0, 122, 255, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(0, 122, 255, 1)'
+                    }, {
+                        label: '推荐标准',
+                        data: [70, 75, 65, 70, 80, 75],
+                        backgroundColor: 'rgba(142, 142, 147, 0.2)',
+                        borderColor: 'rgba(142, 142, 147, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(142, 142, 147, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        // Create calories chart
+        function createCaloriesChart(dailyCalories) {
+            const ctx = document.getElementById('calories-chart').getContext('2d');
+            const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+            const calories = days.map(() => dailyCalories + Math.floor(Math.random() * 200 - 100));
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: days,
+                    datasets: [{
+                        label: '每日热量摄入',
+                        data: calories,
+                        borderColor: '#007AFF',
+                        backgroundColor: 'rgba(0, 122, 255, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // Generate advice
+        function generateAdvice(bmi, score) {
+            const adviceList = document.getElementById('advice-list');
+            let advices = [];
+
+            if (bmi > 25) {
+                advices.push({
+                    icon: '⚖️',
+                    title: '体重管理',
+                    content: '您的BMI偏高，建议适当控制热量摄入，增加运动量。推荐选择低油低盐的健康改良菜品。'
+                });
+            }
+
+            if (score < 85) {
+                advices.push({
+                    icon: '💡',
+                    title: '提升健康评分',
+                    content: '通过合理搭配膳食、保证营养均衡，您的健康评分还有提升空间。建议多吃蔬菜水果。'
+                });
+            }
+
+            advices.push({
+                icon: '🍽️',
+                title: '膳食建议',
+                content: '推荐尝试健康改良版麻婆豆腐套餐，AI优化配方降低35%热量，提升40%蛋白质含量。'
+            });
+
+            advices.push({
+                icon: '💪',
+                title: '运动建议',
+                content: '建议每周进行150分钟中等强度有氧运动，如快走、游泳等。'
+            });
+
+            adviceList.innerHTML = advices.map(advice => `
+                <div class="advice-item">
+                    <div class="advice-icon">${advice.icon}</div>
+                    <div>
+                        <h4 style="font-weight: 600; margin-bottom: 4px;">${advice.title}</h4>
+                        <p style="color: var(--text-secondary); font-size: 14px;">${advice.content}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Submit apply
+        function submitApply() {
+            const name = document.getElementById('apply-name').value;
+            const phone = document.getElementById('apply-phone').value;
+            const address = document.getElementById('apply-address').value;
+            const product = document.getElementById('apply-product').value;
+
+            if (!name || !phone || !address || !product) {
+                alert('请填写完整信息');
+                return;
+            }
+
+            alert('申请提交成功！我们会尽快联系您安排试吃。');
+        }
+
+        // Submit feedback
+        function submitFeedback() {
+            alert('感谢您的反馈！我们会认真参考您的意见。');
+        }
+
+        // Ask AI
+        function askAI() {
+            const question = document.getElementById('ai-question').value;
+            const responseDiv = document.getElementById('ai-response');
+            const answerDiv = document.getElementById('ai-answer');
+
+            if (!question) {
+                alert('请输入问题');
+                return;
+            }
+
+            responseDiv.style.display = 'block';
+            answerDiv.textContent = 'AI正在思考中...';
+
+            // Simulate AI response
+            setTimeout(() => {
+                const responses = [
+                    '根据您的描述，建议选择清淡口味的川菜菜品，并注意控制盐分摄入。我们推荐健康改良版麻婆豆腐套餐，低油低盐配方。',
+
+                    '对于糖尿病患者，建议选择低GI的川菜菜品。我们的AI改良菜品专门针对这一需求，通过优化烹饪工艺降低升糖指数。',
+
+                    '减肥期间可以选择高蛋白、低热量的川菜。宫保鸡丁改良版减少了油糖用量，增加了优质蛋白比例。',
+
+                    '高血压患者需要控制盐分摄入。我们的健康改良版菜品通过天然香料替代部分盐分，既保留美味又降低钠含量。'
+                ];
+
+                answerDiv.textContent = responses[Math.floor(Math.random() * responses.length)];
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快速健康评估 - 元膳健康</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #667eea;
+            --primary-dark: #764ba2;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin-top: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .option-btn {
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary);
+            background: #f9fafb;
+        }
+
+        .option-btn.active {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #e5e7eb;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .loading-subtext {
+            font-size: 0.9rem;
+            color: #9ca3af;
+        }
+
+        .result-section {
+            margin-top: 24px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 16px;
+            display: none;
+        }
+
+        .result-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .score-display {
+            text-align: center;
+            padding: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            color: white;
+            margin-bottom: 24px;
+        }
+
+        .score-value {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .score-label {
+            font-size: 1rem;
+            margin-top: 8px;
+            opacity: 0.9;
+        }
+
+        .result-item {
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        .result-value {
+            color: #6b7280;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: white;
+            color: #6b7280;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 24px;
+        }
+
+        .back-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        @media (max-width: 640px) {
+            .card {
+                padding: 24px;
+                margin-top: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .option-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <h1>⚡ 快速健康评估</h1>
+                <p>仅需1分钟，获得个性化膳食建议</p>
+            </div>
+
+            <!-- 表单区域 -->
+            <form id="quickForm" onsubmit="handleSubmit(event)">
+                <!-- 基本信息 -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">性别</label>
+                        <select class="form-select" id="gender" required>
+                            <option value="">请选择</option>
+                            <option value="male">男</option>
+                            <option value="female">女</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">年龄</label>
+                        <input type="number" class="form-input" id="age" placeholder="岁" min="10" max="100" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">身高 (cm)</label>
+                        <input type="number" class="form-input" id="height" placeholder="厘米" min="100" max="250" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">体重 (kg)</label>
+                        <input type="number" class="form-input" id="weight" placeholder="公斤" min="30" max="200" required>
+                    </div>
+                </div>
+
+                <!-- 健康目标 -->
+                <div class="form-group">
+                    <label class="form-label">您的健康目标</label>
+                    <div class="option-grid">
+                        <div class="option-btn" onclick="selectOption(this, 'goal')">
+                            <i class="fas fa-balance-scale"></i>
+                            <div style="margin-top: 4px;">保持健康</div>
+                        </div>
+                        <div class="option-btn" onclick="selectOption(this, 'goal')">
+                            <i class="fas fa-weight-arrow-down"></i>
+                            <div style="margin-top: 4px;">减重塑形</div>
+                        </div>
+                        <div class="option-btn" onclick="selectOption(this, 'goal')">
+                            <i class="fas fa-dumbbell"></i>
+                            <div style="margin-top: 4px;">增肌健身</div>
+                        </div>
+                        <div class="option-btn" onclick="selectOption(this, 'goal')">
+                            <i class="fas fa-heart-pulse"></i>
+                            <div style="margin-top: 4px;">调理身体</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 慢性病史 -->
+                <div class="form-group">
+                    <label class="form-label">慢性病史（多选）</label>
+                    <div class="option-grid">
+                        <div class="option-btn" onclick="toggleOption(this, 'disease')">
+                            <i class="fas fa-check-circle"></i>
+                            <div style="margin-top: 4px;">无</div>
+                        </div>
+                        <div class="option-btn" onclick="toggleOption(this, 'disease')">
+                            <i class="fas fa-tint"></i>
+                            <div style="margin-top: 4px;">高血压</div>
+                        </div>
+                        <div class="option-btn" onclick="toggleOption(this, 'disease')">
+                            <i class="fas fa-capsules"></i>
+                            <div style="margin-top: 4px;">糖尿病</div>
+                        </div>
+                        <div class="option-btn" onclick="toggleOption(this, 'disease')">
+                            <i class="fas fa-droplet"></i>
+                            <div style="margin-top: 4px;">高血脂</div>
+                        </div>
+                        <div class="option-btn" onclick="toggleOption(this, 'disease')">
+                            <i class="fas fa-bone"></i>
+                            <div style="margin-top: 4px;">痛风</div>
+                        </div>
+                        <div class="option-btn" onclick="toggleOption(this, 'disease')">
+                            <i class="fas fa-stomach"></i>
+                            <div style="margin-top: 4px;">胃病</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 饮食偏好 -->
+                <div class="form-group">
+                    <label class="form-label">偏好的菜系</label>
+                    <div class="option-grid">
+                        <div class="option-btn" onclick="selectOption(this, 'cuisine')">
+                            <i class="fas fa-pepper-hot"></i>
+                            <div style="margin-top: 4px;">川菜</div>
+                        </div>
+                        <div class="option-btn" onclick="selectOption(this, 'cuisine')">
+                            <i class="fas fa-utensils"></i>
+                            <div style="margin-top: 4px;">粤菜</div>
+                        </div>
+                        <div class="option-btn" onclick="selectOption(this, 'cuisine')">
+                            <i class="fas fa-bowl-rice"></i>
+                            <div style="margin-top: 4px;">鲁菜</div>
+                        </div>
+                        <div class="option-btn" onclick="selectOption(this, 'cuisine')">
+                            <i class="fas fa-fish"></i>
+                            <div style="margin-top: 4px;">苏菜</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 忌口 -->
+                <div class="form-group">
+                    <label class="form-label">饮食忌口（多选）</label>
+                    <div class="option-grid">
+                        <div class="option-btn" onclick="toggleOption(this, 'avoid')">
+                            <i class="fas fa-check"></i>
+                            <div style="margin-top: 4px;">无</div>
+                        </div>
+                        <div class="option-btn" onclick="toggleOption(this, 'avoid')">
+                            <i class="fas fa-leaf"></i>
+                            <div style="margin-top: 4px;">不吃辣</div>
+                        </div>
+                        <div class="option-btn" onclick="toggleOption(this, 'avoid')">
+                            <i class="fas fa-drumstick-bite"></i>
+                            <div style="margin-top: 4px;">不吃肉</div>
+                        </div>
+                        <div class="option-btn" onclick="toggleOption(this, 'avoid')">
+                            <i class="fas fa-fish"></i>
+                            <div style="margin-top: 4px;">不吃海鲜</div>
+                        </div>
+                        <div class="option-btn" onclick="toggleOption(this, 'avoid')">
+                            <i class="fas fa-cow"></i>
+                            <div style="margin-top: 4px;">不吃牛奶</div>
+                        </div>
+                        <div class="option-btn" onclick="toggleOption(this, 'avoid')">
+                            <i class="fas fa-egg"></i>
+                            <div style="margin-top: 4px;">不吃蛋类</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-magic"></i>
+                    立即生成膳食方案
+                </button>
+            </form>
+
+            <!-- 结果区域 -->
+            <div id="resultSection" class="result-section">
+                <button class="back-btn" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i>
+                    重新评估
+                </button>
+
+                <div class="score-display">
+                    <div class="score-value" id="healthScore">85</div>
+                    <div class="score-label">健康综合评分</div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-label">BMI指数</div>
+                    <div class="result-value" id="bmiValue">--</div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-label">健康目标</div>
+                    <div class="result-value" id="goalValue">--</div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-label">推荐菜系</div>
+                    <div class="result-value" id="cuisineValue">--</div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-label">饮食建议</div>
+                    <div class="result-value" id="adviceValue">--</div>
+                </div>
+
+                <button class="submit-btn" onclick="saveReport()" style="margin-top: 16px;">
+                    <i class="fas fa-save"></i>
+                    保存到个人中心
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-box">
+            <div class="spinner"></div>
+            <div class="loading-text">正在生成您的膳食方案...</div>
+            <div class="loading-subtext">AI正在分析您的健康数据</div>
+        </div>
+    </div>
+
+    <script>
+        let selectedGoal = '';
+        let selectedCuisine = '';
+        let selectedDiseases = new Set();
+        let selectedAvoids = new Set();
+
+        // 单选
+        function selectOption(el, type) {
+            const container = el.parentElement;
+            container.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            el.classList.add('active');
+
+            if (type === 'goal') {
+                selectedGoal = el.querySelector('div').textContent.trim();
+            } else if (type === 'cuisine') {
+                selectedCuisine = el.querySelector('div').textContent.trim();
+            }
+        }
+
+        // 多选
+        function toggleOption(el, type) {
+            const value = el.querySelector('div').textContent.trim();
+            const isActive = el.classList.contains('active');
+
+            if (value === '无') {
+                // 如果点击"无"，清除其他选项
+                const container = el.parentElement;
+                container.querySelectorAll('.option-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                el.classList.add('active');
+                if (type === 'disease') {
+                    selectedDiseases.clear();
+                    selectedDiseases.add('无');
+                } else if (type === 'avoid') {
+                    selectedAvoids.clear();
+                    selectedAvoids.add('无');
+                }
+            } else {
+                // 如果点击其他选项，移除"无"
+                const container = el.parentElement;
+                const noneBtn = container.querySelector('.option-btn:nth-child(1)');
+                noneBtn.classList.remove('active');
+                if (type === 'disease') {
+                    selectedDiseases.delete('无');
+                } else if (type === 'avoid') {
+                    selectedAvoids.delete('无');
+                }
+
+                if (isActive) {
+                    el.classList.remove('active');
+                    if (type === 'disease') {
+                        selectedDiseases.delete(value);
+                    } else if (type === 'avoid') {
+                        selectedAvoids.delete(value);
+                    }
+                } else {
+                    el.classList.add('active');
+                    if (type === 'disease') {
+                        selectedDiseases.add(value);
+                    } else if (type === 'avoid') {
+                        selectedAvoids.add(value);
+                    }
+                }
+
+                // 如果没有选任何选项，默认选中"无"
+                if (type === 'disease' && selectedDiseases.size === 0) {
+                    noneBtn.classList.add('active');
+                    selectedDiseases.add('无');
+                } else if (type === 'avoid' && selectedAvoids.size === 0) {
+                    noneBtn.classList.add('active');
+                    selectedAvoids.add('无');
+                }
+            }
+        }
+
+        // 提交表单
+        function handleSubmit(e) {
+            e.preventDefault();
+
+            // 验证必填项
+            if (!selectedGoal) {
+                alert('请选择您的健康目标');
+                return;
+            }
+            if (!selectedCuisine) {
+                alert('请选择您偏好的菜系');
+                return;
+            }
+
+            // 显示Loading
+            document.getElementById('loadingOverlay').classList.add('show');
+
+            // 模拟AI处理
+            setTimeout(() => {
+                const height = parseInt(document.getElementById('height').value);
+                const weight = parseInt(document.getElementById('weight').value);
+                const bmi = (weight / Math.pow(height / 100, 2)).toFixed(1);
+
+                document.getElementById('bmiValue').textContent = `${bmi} (${getBMIStatus(bmi)})`;
+                document.getElementById('goalValue').textContent = selectedGoal;
+                document.getElementById('cuisineValue').textContent = selectedCuisine;
+
+                // 生成建议
+                const advice = generateAdvice();
+                document.getElementById('adviceValue').innerHTML = advice;
+
+                // 保存数据
+                saveUserData({
+                    gender: document.getElementById('gender').value,
+                    age: parseInt(document.getElementById('age').value),
+                    height: height,
+                    weight: weight,
+                    bmi: bmi,
+                    goal: selectedGoal,
+                    diseases: Array.from(selectedDiseases),
+                    cuisine: selectedCuisine,
+                    avoid: Array.from(selectedAvoids)
+                });
+
+                // 隐藏Loading，显示结果
+                document.getElementById('loadingOverlay').classList.remove('show');
+                document.getElementById('resultSection').classList.add('show');
+                document.getElementById('quickForm').style.display = 'none';
+            }, 1500);
+        }
+
+        function getBMIStatus(bmi) {
+            if (bmi < 18.5) return '偏瘦';
+            if (bmi < 24) return '正常';
+            if (bmi < 28) return '超重';
+            return '肥胖';
+        }
+
+        function generateAdvice() {
+            let advice = '';
+
+            // 基于健康目标的建议
+            switch (selectedGoal) {
+                case '减重塑形':
+                    advice += '• 控制总热量摄入，建议每日减少300-500千卡<br>';
+                    advice += '• 增加蛋白质摄入，每餐至少25-30g<br>';
+                    advice += '• 减少精制碳水化合物，选择全谷物<br>';
+                    break;
+                case '增肌健身':
+                    advice += '• 增加蛋白质摄入，每日1.6-2.2g/kg体重<br>';
+                    advice += '• 保证充足碳水化合物供能<br>';
+                    advice += '• 运动后及时补充营养<br>';
+                    break;
+                case '调理身体':
+                    advice += '• 饮食清淡，少油少盐<br>';
+                    advice += '• 多吃新鲜蔬果，补充维生素<br>';
+                    advice += '• 规律饮食，避免暴饮暴食<br>';
+                    break;
+                default:
+                    advice += '• 保持均衡饮食，食物多样化<br>';
+                    advice += '• 控制油盐糖摄入<br>';
+                    advice += '• 保持规律运动<br>';
+            }
+
+            // 基于慢性病的建议
+            if (selectedDiseases.has('高血压')) {
+                advice += '<br><strong>高血压注意：</strong>低盐饮食，每日食盐<6g';
+            }
+            if (selectedDiseases.has('糖尿病')) {
+                advice += '<br><strong>糖尿病注意：</strong>控制碳水化合物，选择低GI食物';
+            }
+            if (selectedDiseases.has('高血脂')) {
+                advice += '<br><strong>高血脂注意：</strong>减少动物性脂肪，增加不饱和脂肪酸';
+            }
+
+            return advice;
+        }
+
+        function saveUserData(data) {
+            const users = JSON.parse(localStorage.getItem('yuanshan_users') || '[]');
+            data.id = users.length + 1;
+            data.createdAt = new Date().toISOString();
+            data.healthScore = 85;
+            users.push(data);
+            localStorage.setItem('yuanshan_users', JSON.stringify(users));
+        }
+
+        function goBack() {
+            document.getElementById('resultSection').classList.remove('show');
+            document.getElementById('quickForm').style.display = 'block';
+            // 重置表单
+            document.getElementById('quickForm').reset();
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            selectedGoal = '';
+            selectedCuisine = '';
+            selectedDiseases.clear();
+            selectedAvoids.clear();
+        }
+
+        function saveReport() {
+            alert('报告已保存到个人中心！您可以在"历史记录"中查看完整报告。');
+            // 跳转到个人中心
+            window.location.href = 'user-center.html';
+        }
+    </script>
+</body>
+</html>

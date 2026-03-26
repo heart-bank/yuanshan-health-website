@@ -26,6 +26,10 @@
   ],
   "rewrites": [
     {
+      "source": "/",
+      "destination": "/index.html"
+    },
+    {
       "source": "/health-assessment",
       "destination": "/快速健康评估.html"
     },

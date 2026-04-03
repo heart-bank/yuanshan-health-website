@@ -35,3 +35,8 @@ Thumbs.db
 # 备份文件
 *.bak
 *~
+
+# 部署临时脚本
+*.py
+*.exe
+cloudflared.exe
